@@ -12,7 +12,7 @@
 .hero{margin:18px 0 24px}.eyebrow{color:var(--green);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-.045em;margin:8px 0 12px}.hero p{color:var(--muted);max-width:650px;margin:0}
 .grid{display:grid;grid-template-columns: minmax(0,1.15fr) minmax(280px,.85fr);gap:16px}.card{background:linear-gradient(150deg,rgba(25,36,61,.96),rgba(16,24,43,.96));border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 18px 45px #0002}.card h2{font-size:17px;margin:0 0 16px}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-bottom:13px}.field label{display:block;color:var(--muted);font-size:12px;margin:0 0 6px}.field input,.field select{width:100%;background:#0c1427;border:1px solid #31405f;color:var(--text);padding:12px;border-radius:10px;outline:none}.field input:focus,.field select:focus{border-color:var(--green)}.team-choice{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}.team{border:1px solid var(--line);background:#0c1427;border-radius:12px;padding:12px;cursor:pointer;text-align:left;color:var(--text)}.team strong{display:block}.team small{color:var(--muted)}.team.active{border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green);background:#1a2b2a}.team.active.seeker{border-color:var(--orange);box-shadow:inset 0 0 0 1px var(--orange);background:#30271d}
 button{border:0;border-radius:11px;padding:12px 15px;font-weight:800;cursor:pointer;background:var(--green);color:#10170b;transition:transform .12s,opacity .12s}button:hover{transform:translateY(-1px)}button:disabled{opacity:.4;cursor:not-allowed;transform:none}.secondary{background:#263553;color:var(--text);border:1px solid #3a4b6b}.danger{background:#49212d;color:#ffd9dd;border:1px solid #7b3443}.actions{display:flex;gap:10px;flex-wrap:wrap}.muted{color:var(--muted)}.tiny{font-size:12px;color:var(--muted)}.notice{padding:11px 12px;border-radius:10px;background:#0d172b;border:1px solid var(--line);color:var(--muted);font-size:12px;margin-top:12px}.statusline{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:15px}.pill{display:inline-flex;align-items:center;gap:7px;border-radius:99px;padding:6px 10px;background:#253450;font-size:12px;font-weight:800}.dot{width:7px;height:7px;border-radius:50%;background:var(--green)}.pill.live .dot{background:var(--red);box-shadow:0 0 0 4px #ff737d22}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:15px 0}.stat{background:#0c1427;border:1px solid var(--line);border-radius:12px;padding:12px}.stat strong{font-size:20px;display:block}.stat span{font-size:11px;color:var(--muted)}.radar-wrap{display:flex;justify-content:center;padding:10px 0 18px}.radar{width:min(100%,300px);aspect-ratio:1;border-radius:50%;position:relative;overflow:hidden;background:repeating-radial-gradient(circle,transparent 0 29px,#344663 30px 31px),linear-gradient(90deg,transparent 49.5%,#344663 49.8%,#344663 50.2%,transparent 50.5%),linear-gradient(transparent 49.5%,#344663 49.8%,#344663 50.2%,transparent 50.5%),#0b1628;border:1px solid #3b4c6a}.radar:after{content:"";position:absolute;inset:0;background:conic-gradient(from 0deg,transparent 0 78%,#a6f36b15 88%,#a6f36b55 100%);border-radius:50%;animation:sweep 5s linear infinite;pointer-events:none}@keyframes sweep{to{transform:rotate(360deg)}}.radar-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px #a6f36b25;z-index:2}.blip{position:absolute;transform:translate(-50%,-50%);z-index:3;width:12px;height:12px;border-radius:50%;background:var(--orange);border:2px solid white;box-shadow:0 0 15px #ffbd69a8}.blip span{position:absolute;top:12px;left:50%;transform:translateX(-50%);white-space:nowrap;background:#101a2d;padding:2px 5px;border-radius:5px;font-size:10px}.target-list{display:grid;gap:8px}.target{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#0c1427;border:1px solid var(--line);padding:11px;border-radius:11px}.target b{font-size:13px}.target small{display:block;color:var(--muted);font-size:11px}.target .dist{font-weight:900;color:var(--green);white-space:nowrap}.empty{padding:18px;text-align:center;color:var(--muted);border:1px dashed #3a4b6b;border-radius:12px;font-size:13px}.players{display:grid;gap:8px}.player{display:flex;align-items:center;gap:10px;padding:9px 10px;background:#0c1427;border-radius:10px;border:1px solid var(--line)}.avatar{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#263654;font-weight:900}.player .meta{flex:1}.player b{display:block;font-size:13px}.player small{color:var(--muted);font-size:11px}.teamtag{font-size:10px;border-radius:99px;padding:4px 7px;background:#1e3b31;color:var(--green)}.teamtag.seekers{background:#3d3020;color:var(--orange)}.hidden{display:none!important}.footer{margin-top:18px;text-align:center;color:#7584a3;font-size:11px}
-#map{height:300px;width:100%;border-radius:13px;border:1px solid var(--line);overflow:hidden;background:#101a2d;margin:12px 0 18px}.leaflet-container{font:12px system-ui,sans-serif}
+#map{height:340px;width:100%;border-radius:13px;border:1px solid var(--line);overflow:hidden;background:#101a2d;margin:12px 0 8px}.leaflet-container{font:12px system-ui,sans-serif}
 @media(max-width:800px){.grid{grid-template-columns:1fr}.top{margin-bottom:16px}.hero{margin-top:8px}.card{padding:16px}}@media(max-width:420px){.row{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}.stat{padding:9px}.stat strong{font-size:17px}}
 </style>
 </head>
@@ -60,7 +60,12 @@ button{border:0;border-radius:11px;padding:12px 15px;font-weight:800;cursor:poin
       <section class="card" id="radarCard">
         <div class="statusline"><h2 style="margin:0">Live map + radar</h2><span class="pill" id="pingPill">WAITING</span></div>
         <div id="map" aria-label="Map showing your position and received opposing-team locations"></div>
-        <div class="tiny" style="margin:-6px 0 12px">Map shows your position and only the latest locations released by the scheduled opposing-team pings.</div>
+        <div class="actions" style="margin:0 0 12px">
+          <button class="secondary" id="zoomInBtn" type="button" aria-label="Zoom in">＋ Zoom in</button>
+          <button class="secondary" id="zoomOutBtn" type="button" aria-label="Zoom out">− Zoom out</button>
+          <button class="secondary" id="fitMapBtn" type="button">Fit all markers</button>
+        </div>
+        <div class="tiny" style="margin:0 0 12px">Opposing-team locations remain on the map at their last pinged position until a newer location is received. Zoom and pan freely; use “Fit all markers” to reframe the map.</div>
         <div class="statusline"><h2 style="margin:0;font-size:14px">Radar</h2><span class="tiny">Relative direction</span></div>
         <div class="radar-wrap"><div class="radar" id="radar"><div class="radar-center"></div></div></div>
         <div id="targets" class="target-list"><div class="empty">Join a room and start a game to see timed location pings here.</div></div>
@@ -79,7 +84,7 @@ button{border:0;border-radius:11px;padding:12px 15px;font-weight:800;cursor:poin
   const socket = io();
   let team = "hiders", joined = false, myId = null, myCoords = null;
   let watchId = null, countdownTimer = null, currentState = null, lastPingAt = null;
-  let targets = [], pingTimer = null, map = null, myMarker = null, targetMarkers = new Map(), mapReady = false;
+  let targets = [], pingTimer = null, map = null, myMarker = null, targetMarkers = new Map(), mapReady = false, hasAutoFitted = false;
   const meters = n => n < 1000 ? `${Math.round(n)} m` : `${(n/1000).toFixed(2)} km`;
   const safeText = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   function selectTeam(t) {
@@ -138,7 +143,9 @@ button{border:0;border-radius:11px;padding:12px 15px;font-weight:800;cursor:poin
     resetApp();
   };
   function resetApp() {
-    joined = false; myId = null; currentState = null; targets = [];
+    joined = false; myId = null; currentState = null; targets = []; lastPingAt = null; hasAutoFitted = false;
+    targetMarkers.forEach(marker => { if (mapReady) map.removeLayer(marker); }); targetMarkers.clear();
+    $("pingPill").textContent = "WAITING"; $("pingPill").style.color = "";
     $("setupCard").classList.remove("hidden");
     $("settingsCard").classList.add("hidden");
     $("gameCard").classList.add("hidden");
@@ -218,15 +225,19 @@ button{border:0;border-radius:11px;padding:12px 15px;font-weight:800;cursor:poin
     showMessage("You joined an active game. Location sharing will start after you grant browser permission; you will receive the next scheduled ping.");
   });
   socket.on("location-ping", data => {
-    targets = data.locations || [];
+    // Keep each player's last released location if a later ping has no fix for them.
+    // When a newer location arrives, replace only that player's saved position.
+    const saved = new Map(targets.map(t => [t.id, t]));
+    for (const incoming of (data.locations || [])) saved.set(incoming.id, incoming);
+    targets = [...saved.values()];
     lastPingAt = Date.now();
     $("pingPill").textContent = "PING RECEIVED";
     $("pingPill").style.color = "var(--green)";
     $("targets").innerHTML = targets.length ? targets.map(t => {
       const d = myCoords ? distance(myCoords.lat,myCoords.lon,t.lat,t.lon) : null;
       const bearing = myCoords ? bearingDeg(myCoords.lat,myCoords.lon,t.lat,t.lon) : null;
-      return `<div class="target"><div><b>${safeText(t.username)}</b><small>${bearing === null ? "Enable GPS for direction" : `${compass(bearing)} · ${Math.round(bearing)}°`}</small></div><div class="dist">${d===null?"—":meters(d)}</div></div>`;
-    }).join("") : '<div class="empty">No opposing-team locations were available for this ping. They may not have enabled GPS yet.</div>';
+      return `<div class="target"><div><b>${safeText(t.username)}</b><small>${bearing === null ? "Enable GPS for direction" : `${compass(bearing)} · ${Math.round(bearing)}°`} · Last location: ${new Date(t.capturedAt).toLocaleTimeString()}</small></div><div class="dist">${d===null?"—":meters(d)}</div></div>`;
+    }).join("") : '<div class="empty">No locations received yet. Locations will appear after players enable GPS and a ping is sent.</div>';
     drawRadar();
     updateTargetMapMarkers();
     showMessage(`${data.sourceTeam === "hiders" ? "Hider" : "Seeker"} location ping received at ${new Date(data.sentAt).toLocaleTimeString()}. Next update follows the configured timer.`);
@@ -249,6 +260,9 @@ button{border:0;border-radius:11px;padding:12px 15px;font-weight:800;cursor:poin
       maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
     }).addTo(map);
     mapReady = true;
+    $("zoomInBtn").onclick = () => map.zoomIn();
+    $("zoomOutBtn").onclick = () => map.zoomOut();
+    $("fitMapBtn").onclick = () => fitAllMarkers(true);
     setTimeout(() => map.invalidateSize(), 150);
   }
   function updateMyMapMarker() {
@@ -256,7 +270,7 @@ button{border:0;border-radius:11px;padding:12px 15px;font-weight:800;cursor:poin
     const ll = [myCoords.lat, myCoords.lon];
     if (!myMarker) myMarker = L.circleMarker(ll, {radius:8,color:"#fff",weight:2,fillColor:"#69d6ff",fillOpacity:1}).addTo(map).bindPopup("Your current position");
     else myMarker.setLatLng(ll);
-    if (!targets.length) map.setView(ll, Math.max(map.getZoom(), 15));
+    if (!hasAutoFitted && !targets.length) map.setView(ll, Math.max(map.getZoom(), 15));
     updateTargetMapMarkers();
   }
   function updateTargetMapMarkers() {
@@ -272,11 +286,17 @@ button{border:0;border-radius:11px;padding:12px 15px;font-weight:800;cursor:poin
       } else targetMarkers.get(t.id).setLatLng(ll).setPopupContent(popup);
     });
     for (const [id, marker] of targetMarkers) if (!activeIds.has(id)) { map.removeLayer(marker); targetMarkers.delete(id); }
+    if (!hasAutoFitted && targets.length) fitAllMarkers(false);
+  }
+  function fitAllMarkers(markAsFitted=true) {
+    if (!mapReady) return;
     const bounds = [];
     if (myCoords) bounds.push([myCoords.lat,myCoords.lon]);
     targets.forEach(t => bounds.push([t.lat,t.lon]));
     if (bounds.length > 1) map.fitBounds(bounds, {padding:[28,28], maxZoom:16});
-    else if (bounds.length === 1 && myCoords) map.setView(bounds[0], Math.max(map.getZoom(),15));
+    else if (bounds.length === 1) map.setView(bounds[0], Math.max(map.getZoom(),15));
+    if (markAsFitted) hasAutoFitted = true;
+    else if (targets.length) hasAutoFitted = true;
   }
   function distance(lat1,lon1,lat2,lon2) {
     const R=6371000, rad=x=>x*Math.PI/180, dLat=rad(lat2-lat1), dLon=rad(lon2-lon1);
