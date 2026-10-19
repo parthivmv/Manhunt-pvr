@@ -5,7 +5,7 @@ A responsive browser app for a real-world hide-and-seek game. Players join a roo
 - Hiders → Seekers location ping interval (10–3600 seconds)
 - Seekers → Hiders location ping interval (10–3600 seconds)
 
-It includes browser GPS permission, timed opposing-team location pings, approximate distance and compass direction, a radar-style view, a room player list, and a game countdown.
+It includes browser GPS permission, timed opposing-team location pings, approximate distance and compass direction, an OpenStreetMap-backed map plus radar view, a room player list, a game countdown, mid-game joining, and automatic GPS watch startup when the game is active (after the browser grants permission).
 
 ## Run locally
 

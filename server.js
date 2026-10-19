@@ -116,9 +116,6 @@ io.on("connection", socket => {
 
     const room = ensureRoom(code);
     if (room.status === "ended") return cb({ ok: false, error: "This game has ended. Create a new room ID." });
-    if (room.status === "playing" && !room.players.has(socket.id)) {
-      return cb({ ok: false, error: "This game has already started; new players cannot join." });
-    }
 
     const player = {
       id: socket.id, username, team, connected: true, location: null,
@@ -129,6 +126,14 @@ io.on("connection", socket => {
     socket.data.room = code;
     cb({ ok: true, state: roomState(room), playerId: socket.id });
     emitRoom(room);
+    // Late joiners are allowed during an active game. Start GPS on their device
+    // after the user has explicitly granted browser location permission.
+    if (room.status === "playing") {
+      socket.emit("game-already-playing", {
+        startedAt: room.startedAt, endsAt: room.endsAt,
+        settings: room.settings
+      });
+    }
   });
 
   socket.on("update-settings", (data, cb = () => {}) => {
