@@ -1,0 +1,13 @@
+{
+  "name": "real-life-manhunt",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A real-life hide-and-seek web app with timed location pings",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  }
+}
