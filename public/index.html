@@ -168,6 +168,53 @@ button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
 /* ── Caught banner ─────────────────────────────────────────────────────── */
 .caught-banner { background: linear-gradient(145deg,#38171f,#200f16); border: 2px solid var(--red); border-radius: 14px; padding: 18px; margin: 14px 0; text-align: center; box-shadow: 0 0 25px rgba(255,115,125,.25); }
 
+/* ── Ping countdown bars ────────────────────────────────────────────────── */
+.ping-countdowns { display: grid; gap: 8px; margin: 10px 0 2px; }
+.ping-cd-wrap {
+  background: #0c1427; border: 1px solid var(--line);
+  border-radius: 12px; padding: 10px 13px;
+  transition: border-color .3s;
+}
+.ping-cd-wrap.firing-hider  { border-color: rgba(166,243,107,.5); }
+.ping-cd-wrap.firing-seeker { border-color: rgba(255,189,105,.5); }
+.ping-cd-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
+.ping-cd-header span { font-size: 12px; font-weight: 700; color: var(--muted); }
+.ping-cd-timer { font-size: 13px; font-weight: 900; font-family: ui-monospace,monospace; }
+.ping-cd-timer.hider-timer  { color: var(--green); }
+.ping-cd-timer.seeker-timer { color: var(--orange); }
+.ping-cd-track { background: #1e2d4a; border-radius: 4px; height: 7px; overflow: hidden; }
+.ping-cd-fill {
+  height: 100%; border-radius: 4px;
+  transition: width 0.95s linear;
+  will-change: width;
+}
+.ping-cd-fill.hider-fill  {
+  background: linear-gradient(90deg, #6fbd35, var(--green));
+  box-shadow: 0 0 8px rgba(166,243,107,.35);
+}
+.ping-cd-fill.seeker-fill {
+  background: linear-gradient(90deg, #c08020, var(--orange));
+  box-shadow: 0 0 8px rgba(255,189,105,.35);
+}
+
+/* ── Share link box ─────────────────────────────────────────────────────── */
+.share-box {
+  display: flex; align-items: center; gap: 8px;
+  background: #0c1427; border: 1px solid var(--line);
+  border-radius: 10px; padding: 10px 12px; margin-top: 12px;
+}
+.share-box input {
+  flex: 1; background: transparent; border: none;
+  color: var(--muted); font-size: 12px; outline: none;
+  cursor: text; min-width: 0;
+}
+.share-copy-btn {
+  padding: 7px 13px; font-size: 12px; font-weight: 800;
+  border-radius: 8px; background: #263553; color: var(--text);
+  border: 1px solid #3a4b6b; white-space: nowrap; flex-shrink: 0;
+}
+.share-copy-btn.copied { background: #1e3b31; color: var(--green); border-color: rgba(166,243,107,.3); }
+
 /* ── Map ───────────────────────────────────────────────────────────────── */
 #map { height: 380px; width: 100%; border-radius: 13px; border: 1px solid var(--line); overflow: hidden; background: #101a2d; margin: 12px 0 8px; }
 .leaflet-container { font: 12px system-ui,sans-serif; }
@@ -280,6 +327,13 @@ button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
           <button id="startBtn">Start game ▶</button>
         </div>
         <p class="tiny">Hider and Seeker ping intervals are independent. Shorter intervals = more frequent location reveals.</p>
+
+        <!-- Shareable link -->
+        <div class="share-box" id="shareBox">
+          <span style="font-size:12px;color:var(--muted);white-space:nowrap">🔗 Share:</span>
+          <input id="shareInput" type="text" readonly placeholder="Join the room to get a link">
+          <button class="share-copy-btn" id="copyLinkBtn" type="button">Copy link</button>
+        </div>
       </section>
 
       <!-- ── 03 Live game ──────────────────────────────────────────────── -->
@@ -301,6 +355,28 @@ button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
         <div class="ping-info" id="pingInfo">
           <span class="ping-badge hider-ping">🫥 Hider ping: <span id="hiderPingLabel">—</span></span>
           <span class="ping-badge seeker-ping">🔎 Seeker ping: <span id="seekerPingLabel">—</span></span>
+        </div>
+
+        <!-- Ping countdown bars -->
+        <div class="ping-countdowns" id="pingCountdowns">
+          <div class="ping-cd-wrap" id="hiderCdWrap">
+            <div class="ping-cd-header">
+              <span>🫥 HIDER PING</span>
+              <span class="ping-cd-timer hider-timer" id="hiderCdTimer">--:--</span>
+            </div>
+            <div class="ping-cd-track">
+              <div class="ping-cd-fill hider-fill" id="hiderCdFill" style="width:100%"></div>
+            </div>
+          </div>
+          <div class="ping-cd-wrap" id="seekerCdWrap">
+            <div class="ping-cd-header">
+              <span>🔎 SEEKER PING</span>
+              <span class="ping-cd-timer seeker-timer" id="seekerCdTimer">--:--</span>
+            </div>
+            <div class="ping-cd-track">
+              <div class="ping-cd-fill seeker-fill" id="seekerCdFill" style="width:100%"></div>
+            </div>
+          </div>
         </div>
 
         <!-- Caught banner -->
@@ -331,6 +407,14 @@ button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
         </div>
 
         <div class="notice" id="gpsStatus">Enable location sharing to appear on the map.</div>
+
+        <!-- Shareable link in game -->
+        <div class="share-box" style="margin-top:10px">
+          <span style="font-size:12px;color:var(--muted);white-space:nowrap">🔗 Share:</span>
+          <input id="gameShareInput" type="text" readonly placeholder="Join room link">
+          <button class="share-copy-btn" id="gameCopyLinkBtn" type="button">Copy link</button>
+        </div>
+
         <div class="actions" style="margin-top:12px">
           <button id="gpsBtn">Enable location sharing</button>
           <button class="secondary" id="leaveBtn">Leave room</button>
@@ -410,6 +494,13 @@ button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
   let map = null, myMarker = null, targetMarkers = new Map();
   let mapReady = false, hasAutoFitted = false;
 
+  // ── Ping countdown state ──────────────────────────────────────────────────
+  const pingCd = {
+    hiders:  { totalSec: 30, remainingSec: 30 },
+    seekers: { totalSec: 60, remainingSec: 60 },
+    intervalId: null
+  };
+
   const socket = io();
 
   // ── Utilities ─────────────────────────────────────────────────────────────
@@ -417,6 +508,76 @@ button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
   const safeText = s => String(s ?? "").replace(/[&<>"']/g,
     c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
   const fmtSec = s => s < 60 ? `${s}s` : `${Math.floor(s/60)}m ${s%60 > 0 ? s%60+"s" : ""}`.trim();
+  const fmtTimer = s => {
+    const sec = Math.max(0, Math.ceil(s));
+    return `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
+  };
+
+  // ── Ping countdown UI logic ───────────────────────────────────────────────
+  function updatePingCdUI(team) {
+    const data = pingCd[team];
+    const isHider = team === "hiders";
+    const timerEl = $(isHider ? "hiderCdTimer" : "seekerCdTimer");
+    const fillEl = $(isHider ? "hiderCdFill" : "seekerCdFill");
+    if (!timerEl || !fillEl) return;
+
+    timerEl.textContent = fmtTimer(data.remainingSec);
+    const pct = Math.max(0, Math.min(100, (data.remainingSec / Math.max(1, data.totalSec)) * 100));
+    fillEl.style.width = `${pct}%`;
+  }
+
+  function resetPingCd(team, newTotalSec) {
+    if (newTotalSec && Number.isFinite(Number(newTotalSec))) {
+      pingCd[team].totalSec = Number(newTotalSec);
+    }
+    pingCd[team].remainingSec = pingCd[team].totalSec;
+    updatePingCdUI(team);
+
+    const wrapEl = $(team === "hiders" ? "hiderCdWrap" : "seekerCdWrap");
+    if (wrapEl) {
+      const cls = team === "hiders" ? "firing-hider" : "firing-seeker";
+      wrapEl.classList.add(cls);
+      setTimeout(() => wrapEl.classList.remove(cls), 700);
+    }
+  }
+
+  function startPingCountdowns(hiderSec, seekerSec) {
+    if (hiderSec && Number.isFinite(Number(hiderSec))) {
+      pingCd.hiders.totalSec = Number(hiderSec);
+      pingCd.hiders.remainingSec = pingCd.hiders.totalSec;
+    }
+    if (seekerSec && Number.isFinite(Number(seekerSec))) {
+      pingCd.seekers.totalSec = Number(seekerSec);
+      pingCd.seekers.remainingSec = pingCd.seekers.totalSec;
+    }
+
+    if (pingCd.intervalId) clearInterval(pingCd.intervalId);
+
+    updatePingCdUI("hiders");
+    updatePingCdUI("seekers");
+
+    pingCd.intervalId = setInterval(() => {
+      if (pingCd.hiders.remainingSec > 0) {
+        pingCd.hiders.remainingSec -= 1;
+        updatePingCdUI("hiders");
+      }
+      if (pingCd.seekers.remainingSec > 0) {
+        pingCd.seekers.remainingSec -= 1;
+        updatePingCdUI("seekers");
+      }
+    }, 1000);
+  }
+
+  function stopPingCountdowns() {
+    if (pingCd.intervalId) {
+      clearInterval(pingCd.intervalId);
+      pingCd.intervalId = null;
+    }
+    pingCd.hiders.remainingSec = pingCd.hiders.totalSec;
+    pingCd.seekers.remainingSec = pingCd.seekers.totalSec;
+    updatePingCdUI("hiders");
+    updatePingCdUI("seekers");
+  }
 
   // ── Device / caught persistence ───────────────────────────────────────────
   function getOrCreateDeviceId() {
@@ -462,6 +623,15 @@ button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
   initSlider("hiderPingRange", "hiderPingVal",  fmtSec);
   initSlider("seekerPingRange","seekerPingVal", fmtSec);
 
+  // ── URL pre-fill (shareable link) ─────────────────────────────────────────
+  (function applyUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    const roomParam = params.get("room");
+    if (roomParam) {
+      $("room").value = roomParam.toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 12);
+    }
+  })();
+
   // ── Team selection ────────────────────────────────────────────────────────
   function selectTeam(t) {
     state.team = t;
@@ -470,9 +640,20 @@ button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
   }
   $("hiderChoice").onclick = () => selectTeam("hiders");
   $("seekerChoice").onclick = () => selectTeam("seekers");
-  $("randomBtn").onclick = () => $("room").value = "HUNT" + Math.random().toString(36).slice(2,6).toUpperCase();
-  $("room").addEventListener("input", e =>
-    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 12));
+  $("randomBtn").onclick = () => {
+    const code = "HUNT" + Math.random().toString(36).slice(2,6).toUpperCase();
+    $("room").value = code;
+    history.replaceState(null, "", `?room=${encodeURIComponent(code)}`);
+  };
+  $("room").addEventListener("input", e => {
+    const cleaned = e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 12);
+    e.target.value = cleaned;
+    if (cleaned.length >= 3) {
+      history.replaceState(null, "", `?room=${encodeURIComponent(cleaned)}`);
+    } else if (!cleaned) {
+      history.replaceState(null, "", location.pathname);
+    }
+  });
 
   // ── Status messages ───────────────────────────────────────────────────────
   function showMessage(msg, isError = false) {
@@ -512,6 +693,12 @@ button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
       $("roomPill").textContent = "ROOM " + room;
       $("myTeam").textContent = state.team === "hiders" ? "HIDER" : "SEEKER";
 
+      // ── Shareable link ──────────────────────────────────────────────────
+      const shareUrl = `${location.origin}${location.pathname}?room=${encodeURIComponent(room)}`;
+      $("shareInput").value = shareUrl;
+      if ($("gameShareInput")) $("gameShareInput").value = shareUrl;
+      history.replaceState(null, "", `?room=${encodeURIComponent(room)}`);
+
       if (state.team === "hiders") {
         $("hiderCodeBox").classList.remove("hidden");
         $("seekerCatchBox").classList.add("hidden");
@@ -549,6 +736,28 @@ button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
   $("submitCatchBtn").onclick = submitCatchCode;
   $("catchCodeInput").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); submitCatchCode(); } });
 
+  // ── Copy link button handler ──────────────────────────────────────────────
+  function copyShareUrl(inputEl, btnEl) {
+    const url = inputEl?.value;
+    if (!url) return;
+    navigator.clipboard.writeText(url).then(() => {
+      btnEl.textContent = "✓ Copied!";
+      btnEl.classList.add("copied");
+      setTimeout(() => {
+        btnEl.textContent = "Copy link";
+        btnEl.classList.remove("copied");
+      }, 2000);
+    }).catch(() => {
+      inputEl.select();
+      document.execCommand("copy");
+    });
+  }
+
+  $("copyLinkBtn").onclick = () => copyShareUrl($("shareInput"), $("copyLinkBtn"));
+  if ($("gameCopyLinkBtn")) {
+    $("gameCopyLinkBtn").onclick = () => copyShareUrl($("gameShareInput"), $("gameCopyLinkBtn"));
+  }
+
   // ── Settings ──────────────────────────────────────────────────────────────
   $("saveSettings").onclick = () => {
     socket.emit("update-settings", {
@@ -580,8 +789,12 @@ button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
     $("players").innerHTML      = '<div class="empty">No players yet.</div>';
     $("locationsCount").textContent = "0 active";
     $("catchFeedback").textContent  = "";
+    $("shareInput").value = "";
+    if ($("gameShareInput")) $("gameShareInput").value = "";
     hasAutoFitted = false;
     if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+    stopPingCountdowns();
+    history.replaceState(null, "", location.pathname);
   }
 
   // ── GPS location ──────────────────────────────────────────────────────────
@@ -663,9 +876,11 @@ button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
         $("gameStatus").classList.add("live");
         if (s.endsAt) runCountdown(s.endsAt);
         if (watchId === null && !state.isCaught) startLocation();
+        startPingCountdowns(s.settings?.hiderPingSec || 30, s.settings?.seekerPingSec || 60);
       } else {
         $("gameStatus").textContent = "ENDED";
         $("gameStatus").classList.remove("live");
+        stopPingCountdowns();
       }
     }
   }
@@ -701,6 +916,7 @@ button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
     if (data?.settings) {
       $("hiderPingLabel").textContent  = fmtSec(data.settings.hiderPingSec  || 30);
       $("seekerPingLabel").textContent = fmtSec(data.settings.seekerPingSec || 60);
+      startPingCountdowns(data.settings.hiderPingSec || 30, data.settings.seekerPingSec || 60);
     }
     showMessage("Joined an active game — location sharing enabled.");
   });
@@ -717,6 +933,16 @@ button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
     const saved = new Map(state.targets.map(t => [t.id, t]));
     for (const loc of (data.locations || [])) saved.set(loc.id, loc);
     state.targets = [...saved.values()];
+
+    // Reset ping countdown bar for the pinged team
+    if (data.teamFilter === "hiders") {
+      resetPingCd("hiders", data.hiderPingSec);
+    } else if (data.teamFilter === "seekers") {
+      resetPingCd("seekers", data.seekerPingSec);
+    } else {
+      resetPingCd("hiders", data.hiderPingSec);
+      resetPingCd("seekers", data.seekerPingSec);
+    }
 
     // Flash ping pill
     const label = data.teamFilter === "hiders" ? "🫥 HIDER PING" : data.teamFilter === "seekers" ? "🔎 SEEKER PING" : "PING";
@@ -771,6 +997,7 @@ button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
     if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
     $("countdown").textContent = "00:00";
     stopLocation();
+    stopPingCountdowns();
     setTimeout(() => alert(data.message || "Game ended!"), 100);
   });
 
