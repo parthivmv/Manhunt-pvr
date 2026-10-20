@@ -3,66 +3,293 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MANHUNT — Real-Life Hide & Seek</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<title>MANHUNT — Real-Life Hide &amp; Seek</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <style>
-:root{--bg:#0b1020;--panel:#131b30;--panel2:#19243d;--line:#293654;--text:#f2f5ff;--muted:#a3b0cc;--green:#a6f36b;--orange:#ffbd69;--red:#ff737d;--blue:#8eb8ff}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172543 0,#0b1020 55%);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
-.wrap{max-width:1120px;margin:auto;padding:24px 18px 50px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}.brand{font-weight:900;letter-spacing:.17em;font-size:14px}.brand span{color:var(--green)}.badge{border:1px solid var(--line);padding:6px 10px;border-radius:99px;color:var(--muted);font-size:12px}
-.hero{margin:18px 0 24px}.eyebrow{color:var(--green);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-.045em;margin:8px 0 12px}.hero p{color:var(--muted);max-width:650px;margin:0}
-.grid{display:grid;grid-template-columns: minmax(0,1.15fr) minmax(280px,.85fr);gap:16px}.card{background:linear-gradient(150deg,rgba(25,36,61,.96),rgba(16,24,43,.96));border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 18px 45px #0002}.card h2{font-size:17px;margin:0 0 16px}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-bottom:13px}.field label{display:block;color:var(--muted);font-size:12px;margin:0 0 6px}.field input,.field select{width:100%;background:#0c1427;border:1px solid #31405f;color:var(--text);padding:12px;border-radius:10px;outline:none}.field input:focus,.field select:focus{border-color:var(--green)}.team-choice{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}.team{border:1px solid var(--line);background:#0c1427;border-radius:12px;padding:12px;cursor:pointer;text-align:left;color:var(--text)}.team strong{display:block}.team small{color:var(--muted)}.team.active{border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green);background:#1a2b2a}.team.active.seeker{border-color:var(--orange);box-shadow:inset 0 0 0 1px var(--orange);background:#30271d}
-button{border:0;border-radius:11px;padding:12px 15px;font-weight:800;cursor:pointer;background:var(--green);color:#10170b;transition:transform .12s,opacity .12s}button:hover{transform:translateY(-1px)}button:disabled{opacity:.4;cursor:not-allowed;transform:none}.secondary{background:#263553;color:var(--text);border:1px solid #3a4b6b}.danger{background:#49212d;color:#ffd9dd;border:1px solid #7b3443}.actions{display:flex;gap:10px;flex-wrap:wrap}.muted{color:var(--muted)}.tiny{font-size:12px;color:var(--muted)}.notice{padding:11px 12px;border-radius:10px;background:#0d172b;border:1px solid var(--line);color:var(--muted);font-size:12px;margin-top:12px}.statusline{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:15px}.pill{display:inline-flex;align-items:center;gap:7px;border-radius:99px;padding:6px 10px;background:#253450;font-size:12px;font-weight:800}.dot{width:7px;height:7px;border-radius:50%;background:var(--green)}.pill.live .dot{background:var(--red);box-shadow:0 0 0 4px #ff737d22}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:15px 0}.stat{background:#0c1427;border:1px solid var(--line);border-radius:12px;padding:12px}.stat strong{font-size:19px;display:block}.stat span{font-size:11px;color:var(--muted)}
-.target-list{display:grid;gap:8px}.target{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#0c1427;border:1px solid var(--line);padding:11px;border-radius:11px}.target b{font-size:13px}.target small{display:block;color:var(--muted);font-size:11px}.target .dist{font-weight:900;white-space:nowrap}.empty{padding:18px;text-align:center;color:var(--muted);border:1px dashed #3a4b6b;border-radius:12px;font-size:13px}.players{display:grid;gap:8px}.player{display:flex;align-items:center;gap:10px;padding:9px 10px;background:#0c1427;border-radius:10px;border:1px solid var(--line)}.avatar{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#263654;font-weight:900}.player .meta{flex:1}.player b{display:block;font-size:13px}.player small{color:var(--muted);font-size:11px}
-.teamtag{font-size:10px;border-radius:99px;padding:4px 7px;background:#1e3b31;color:var(--green);font-weight:700}.teamtag.seekers{background:#3d3020;color:var(--orange)}.teamtag.caught{background:#49212d;color:var(--red)}
-.caught-tag{font-size:10px;border-radius:99px;padding:3px 7px;background:#49212d;color:var(--red);border:1px solid #7b3443;font-weight:800;margin-left:4px}
-.player.is-caught{opacity:.65}.player.is-caught b{text-decoration:line-through}
-.catch-code-box{background:#0c1726;border:2px dashed var(--green);border-radius:14px;padding:16px;margin:14px 0;text-align:center}
-.catch-code-display{font-size:36px;font-weight:900;letter-spacing:10px;color:var(--green);text-shadow:0 0 20px rgba(166,243,107,.45);margin:10px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
-.seeker-catch-box{background:#1a1924;border:1px solid #5a3d24;border-radius:14px;padding:16px;margin:14px 0}
-.catch-input-row{display:flex;gap:10px;margin-top:8px}
-.catch-input-row input{flex:1;background:#0c1427;border:1px solid #5a3d24;color:var(--text);padding:12px;border-radius:10px;font-size:16px;font-weight:700;letter-spacing:3px;text-align:center}
-.catch-input-row input:focus{border-color:var(--orange);outline:none}
-.catch-feedback{margin-top:8px;font-weight:700}
-.caught-banner{background:linear-gradient(145deg,#38171f,#200f16);border:2px solid var(--red);border-radius:14px;padding:18px;margin:14px 0;text-align:center;box-shadow:0 0 25px rgba(255,115,125,.25)}
-.hidden{display:none!important}.footer{margin-top:18px;text-align:center;color:#7584a3;font-size:11px}
-#map{height:380px;width:100%;border-radius:13px;border:1px solid var(--line);overflow:hidden;background:#101a2d;margin:12px 0 8px}.leaflet-container{font:12px system-ui,sans-serif}
-@media(max-width:800px){.grid{grid-template-columns:1fr}.top{margin-bottom:16px}.hero{margin-top:8px}.card{padding:16px}}
-@media(max-width:540px){.stats{grid-template-columns:repeat(2,1fr)}.stat strong{font-size:17px}.row{grid-template-columns:1fr}}
+/* ── Design tokens ─────────────────────────────────────────────────────── */
+:root {
+  --bg:#0b1020; --panel:#131b30; --panel2:#19243d; --line:#293654;
+  --text:#f2f5ff; --muted:#a3b0cc;
+  --green:#a6f36b; --orange:#ffbd69; --red:#ff737d; --blue:#38bdf8;
+}
+
+/* ── Reset / base ──────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: radial-gradient(ellipse at top,#172543 0,var(--bg) 55%);
+  color: var(--text);
+  font: 15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  min-height: 100vh;
+}
+
+/* ── Layout ────────────────────────────────────────────────────────────── */
+.wrap { max-width: 1120px; margin: auto; padding: 24px 18px 60px; }
+.top  { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 24px; }
+.grid { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(280px,.85fr); gap: 16px; }
+
+/* ── Branding ──────────────────────────────────────────────────────────── */
+.brand { font-weight: 900; letter-spacing: .17em; font-size: 14px; }
+.brand span { color: var(--green); }
+.badge { border: 1px solid var(--line); padding: 6px 10px; border-radius: 99px; color: var(--muted); font-size: 12px; }
+
+/* ── Hero ──────────────────────────────────────────────────────────────── */
+.hero { margin: 18px 0 24px; }
+.eyebrow { color: var(--green); font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.hero h1 { font-size: clamp(34px,6vw,58px); line-height: 1.02; letter-spacing: -.045em; margin: 8px 0 12px; }
+.hero p  { color: var(--muted); max-width: 650px; margin: 0; }
+
+/* ── Card ──────────────────────────────────────────────────────────────── */
+.card {
+  background: linear-gradient(150deg,rgba(25,36,61,.96),rgba(16,24,43,.96));
+  border: 1px solid var(--line); border-radius: 20px;
+  padding: 20px; box-shadow: 0 18px 45px #0002;
+}
+.card h2 { font-size: 17px; margin: 0 0 16px; }
+
+/* ── Forms ─────────────────────────────────────────────────────────────── */
+.row   { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field { margin-bottom: 13px; }
+.field label { display: block; color: var(--muted); font-size: 12px; margin: 0 0 6px; }
+.field input, .field select {
+  width: 100%; background: #0c1427; border: 1px solid #31405f;
+  color: var(--text); padding: 12px; border-radius: 10px; outline: none;
+}
+.field input:focus, .field select:focus { border-color: var(--green); }
+
+/* ── Slider ────────────────────────────────────────────────────────────── */
+.slider-wrap { margin-bottom: 14px; }
+.slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.slider-header label { color: var(--muted); font-size: 12px; font-weight: 700; }
+.slider-val { background: #0c1427; border: 1px solid #31405f; border-radius: 8px; padding: 4px 10px; font-size: 13px; font-weight: 800; min-width: 56px; text-align: center; }
+.slider-val.hider-val  { color: var(--green); border-color: rgba(166,243,107,.3); }
+.slider-val.seeker-val { color: var(--orange); border-color: rgba(255,189,105,.3); }
+input[type=range] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 6px; border-radius: 3px;
+  background: #1e2d4a; outline: none; cursor: pointer;
+}
+input[type=range].hider-range::-webkit-slider-thumb,
+input[type=range].hider-range::-moz-range-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--green); border: 2px solid #fff; cursor: pointer;
+  box-shadow: 0 0 8px rgba(166,243,107,.5);
+}
+input[type=range].seeker-range::-webkit-slider-thumb,
+input[type=range].seeker-range::-moz-range-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--orange); border: 2px solid #fff; cursor: pointer;
+  box-shadow: 0 0 8px rgba(255,189,105,.5);
+}
+.slider-ticks { display: flex; justify-content: space-between; margin-top: 4px; }
+.slider-ticks span { font-size: 10px; color: var(--muted); }
+
+/* ── Team choice ───────────────────────────────────────────────────────── */
+.team-choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.team { border: 1px solid var(--line); background: #0c1427; border-radius: 12px; padding: 12px; cursor: pointer; text-align: left; color: var(--text); }
+.team strong { display: block; }
+.team small  { color: var(--muted); }
+.team.active        { border-color: var(--green);  box-shadow: inset 0 0 0 1px var(--green);  background: #1a2b2a; }
+.team.active.seeker { border-color: var(--orange); box-shadow: inset 0 0 0 1px var(--orange); background: #30271d; }
+
+/* ── Buttons ───────────────────────────────────────────────────────────── */
+button {
+  border: 0; border-radius: 11px; padding: 12px 15px; font-weight: 800;
+  cursor: pointer; background: var(--green); color: #10170b;
+  transition: transform .12s, opacity .12s;
+}
+button:hover    { transform: translateY(-1px); }
+button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+.secondary { background: #263553; color: var(--text); border: 1px solid #3a4b6b; }
+.danger    { background: #49212d; color: #ffd9dd; border: 1px solid #7b3443; }
+.actions   { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ── Utility ───────────────────────────────────────────────────────────── */
+.muted   { color: var(--muted); }
+.tiny    { font-size: 12px; color: var(--muted); }
+.notice  { padding: 11px 12px; border-radius: 10px; background: #0d172b; border: 1px solid var(--line); color: var(--muted); font-size: 12px; margin-top: 12px; }
+.hidden  { display: none !important; }
+.footer  { margin-top: 18px; text-align: center; color: #7584a3; font-size: 11px; }
+
+/* ── Status ────────────────────────────────────────────────────────────── */
+.statusline { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 15px; }
+.pill { display: inline-flex; align-items: center; gap: 7px; border-radius: 99px; padding: 6px 10px; background: #253450; font-size: 12px; font-weight: 800; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+.pill.live .dot { background: var(--red); box-shadow: 0 0 0 4px #ff737d22; animation: pulse 1.5s ease infinite; }
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 4px #ff737d22} 50%{box-shadow:0 0 0 8px #ff737d0a} }
+
+/* ── Stats bar ─────────────────────────────────────────────────────────── */
+.stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 9px; margin: 15px 0; }
+.stat { background: #0c1427; border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+.stat strong { font-size: 19px; display: block; }
+.stat span   { font-size: 11px; color: var(--muted); }
+
+/* ── Ping info bar ─────────────────────────────────────────────────────── */
+.ping-info { display: flex; gap: 10px; flex-wrap: wrap; margin: 8px 0 4px; }
+.ping-badge { display: inline-flex; align-items: center; gap: 5px; border-radius: 8px; padding: 5px 10px; font-size: 11px; font-weight: 800; }
+.ping-badge.hider-ping  { background: rgba(166,243,107,.12); border: 1px solid rgba(166,243,107,.25); color: var(--green); }
+.ping-badge.seeker-ping { background: rgba(255,189,105,.12); border: 1px solid rgba(255,189,105,.25); color: var(--orange); }
+
+/* ── Location list ─────────────────────────────────────────────────────── */
+.target-list { display: grid; gap: 8px; }
+.target { display: flex; justify-content: space-between; gap: 10px; align-items: center; background: #0c1427; border: 1px solid var(--line); padding: 11px; border-radius: 11px; transition: border-color .2s; }
+.target.fresh { border-color: rgba(166,243,107,.4); }
+.target b    { font-size: 13px; }
+.target small{ display: block; color: var(--muted); font-size: 11px; }
+.target .dist{ font-weight: 900; white-space: nowrap; }
+.empty { padding: 18px; text-align: center; color: var(--muted); border: 1px dashed #3a4b6b; border-radius: 12px; font-size: 13px; }
+
+/* ── Players list ──────────────────────────────────────────────────────── */
+.players { display: grid; gap: 8px; }
+.player  { display: flex; align-items: center; gap: 10px; padding: 9px 10px; background: #0c1427; border-radius: 10px; border: 1px solid var(--line); }
+.player.is-caught { opacity: .65; }
+.player.is-caught b { text-decoration: line-through; }
+.avatar  { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: #263654; font-weight: 900; }
+.player .meta { flex: 1; }
+.player b    { display: block; font-size: 13px; }
+.player small{ color: var(--muted); font-size: 11px; }
+.teamtag { font-size: 10px; border-radius: 99px; padding: 4px 7px; font-weight: 700; }
+.teamtag.hiders  { background: #1e3b31; color: var(--green); }
+.teamtag.seekers { background: #3d3020; color: var(--orange); }
+.teamtag.caught  { background: #49212d; color: var(--red); }
+.caught-tag { font-size: 10px; border-radius: 99px; padding: 3px 7px; background: #49212d; color: var(--red); border: 1px solid #7b3443; font-weight: 800; margin-left: 4px; }
+
+/* ── Catch code / seeker input ─────────────────────────────────────────── */
+.catch-code-box { background: #0c1726; border: 2px dashed var(--green); border-radius: 14px; padding: 16px; margin: 14px 0; text-align: center; }
+.catch-code-display { font-size: 36px; font-weight: 900; letter-spacing: 10px; color: var(--green); text-shadow: 0 0 20px rgba(166,243,107,.45); margin: 10px 0; font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; }
+.seeker-catch-box  { background: #1a1924; border: 1px solid #5a3d24; border-radius: 14px; padding: 16px; margin: 14px 0; }
+.catch-input-row   { display: flex; gap: 10px; margin-top: 8px; }
+.catch-input-row input { flex: 1; background: #0c1427; border: 1px solid #5a3d24; color: var(--text); padding: 12px; border-radius: 10px; font-size: 16px; font-weight: 700; letter-spacing: 3px; text-align: center; }
+.catch-input-row input:focus { border-color: var(--orange); outline: none; }
+.catch-feedback { margin-top: 8px; font-weight: 700; }
+
+/* ── Caught banner ─────────────────────────────────────────────────────── */
+.caught-banner { background: linear-gradient(145deg,#38171f,#200f16); border: 2px solid var(--red); border-radius: 14px; padding: 18px; margin: 14px 0; text-align: center; box-shadow: 0 0 25px rgba(255,115,125,.25); }
+
+/* ── Map ───────────────────────────────────────────────────────────────── */
+#map { height: 380px; width: 100%; border-radius: 13px; border: 1px solid var(--line); overflow: hidden; background: #101a2d; margin: 12px 0 8px; }
+.leaflet-container { font: 12px system-ui,sans-serif; }
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 800px) {
+  .grid { grid-template-columns: 1fr; }
+  .top  { margin-bottom: 16px; }
+  .hero { margin-top: 8px; }
+  .card { padding: 16px; }
+}
+@media (max-width: 540px) {
+  .stats { grid-template-columns: repeat(2,1fr); }
+  .stat strong { font-size: 17px; }
+  .row { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><div class="brand">◉ <span>MAN</span>HUNT</div><div class="badge">REAL-WORLD GAME · BETA</div></div>
-  <section class="hero"><div class="eyebrow">Hide. Move. Don't get caught.</div><h1>Make the whole<br>world your arena.</h1><p>Create a private room, split into hiders and seekers, track all player locations on the live map, and enter the secret code to catch hiders.</p></section>
+
+  <!-- ── Top bar ─────────────────────────────────────────────────────────── -->
+  <div class="top">
+    <div class="brand">◉ <span>MAN</span>HUNT</div>
+    <div class="badge">REAL-WORLD GAME · BETA</div>
+  </div>
+
+  <!-- ── Hero ────────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="eyebrow">Hide. Move. Don't get caught.</div>
+    <h1>Make the whole<br>world your arena.</h1>
+    <p>Create a private room, split into hiders and seekers, track locations on the live map, and use secret codes to confirm catches.</p>
+  </section>
+
   <div class="grid">
     <main>
+
+      <!-- ── 01 Setup ──────────────────────────────────────────────────── -->
       <section class="card" id="setupCard">
         <h2>01 / Join your game</h2>
         <div class="row">
-          <div class="field"><label for="username">YOUR USERNAME</label><input id="username" maxlength="24" placeholder="e.g. NightFox" autocomplete="nickname"></div>
-          <div class="field"><label for="room">ROOM ID</label><input id="room" maxlength="12" placeholder="e.g. PARK42" style="text-transform:uppercase"></div>
+          <div class="field">
+            <label for="username">YOUR USERNAME</label>
+            <input id="username" maxlength="24" placeholder="e.g. NightFox" autocomplete="nickname">
+          </div>
+          <div class="field">
+            <label for="room">ROOM ID</label>
+            <input id="room" maxlength="12" placeholder="e.g. PARK42" style="text-transform:uppercase">
+          </div>
         </div>
+
         <label class="tiny">CHOOSE YOUR TEAM</label>
         <div class="team-choice">
-          <button class="team active" id="hiderChoice" type="button"><strong>🫥 Hiders</strong><small>Stay unseen. Move smart.</small></button>
-          <button class="team seeker" id="seekerChoice" type="button"><strong>🔎 Seekers</strong><small>Follow the pings & catch.</small></button>
+          <button class="team active" id="hiderChoice" type="button">
+            <strong>🫥 Hiders</strong>
+            <small>Stay unseen. Move smart.</small>
+          </button>
+          <button class="team seeker" id="seekerChoice" type="button">
+            <strong>🔎 Seekers</strong>
+            <small>Track pings &amp; catch hiders.</small>
+          </button>
         </div>
-        <div class="actions"><button id="joinBtn">Join room →</button><button class="secondary" id="randomBtn" type="button">Random room ID</button></div>
-        <div class="notice">Everyone must use the same Room ID. Players who are caught cannot rejoin with a different name.</div>
+
+        <div class="actions">
+          <button id="joinBtn">Join room →</button>
+          <button class="secondary" id="randomBtn" type="button">Random room ID</button>
+        </div>
+        <div class="notice">Everyone must use the same Room ID. Caught players cannot rejoin under a different name.</div>
       </section>
 
+      <!-- ── 02 Settings ───────────────────────────────────────────────── -->
       <section class="card hidden" id="settingsCard" style="margin-top:16px">
-        <div class="statusline"><h2 style="margin:0">02 / Game settings</h2><span class="pill" id="roomPill">ROOM —</span></div>
-        <div class="row">
-          <div class="field"><label for="duration">GAME LENGTH (MINUTES)</label><input id="duration" type="number" min="1" max="240" value="30"></div>
-          <div class="field"><label for="pingSec">LOCATION PING INTERVAL (SECONDS)</label><input id="pingSec" type="number" min="5" max="3600" value="30"></div>
+        <div class="statusline">
+          <h2 style="margin:0">02 / Game settings</h2>
+          <span class="pill" id="roomPill">ROOM —</span>
         </div>
-        <div class="actions"><button class="secondary" id="saveSettings">Save settings</button><button id="startBtn">Start game ▶</button></div>
-        <p class="tiny">Only available before the game starts. Both Hiders and Seekers receive all player locations at this interval.</p>
+
+        <!-- Game duration -->
+        <div class="slider-wrap">
+          <div class="slider-header">
+            <label for="durationRange">⏱ GAME LENGTH</label>
+            <span class="slider-val" id="durationVal">30 min</span>
+          </div>
+          <input type="range" id="durationRange" min="1" max="120" step="1" value="30">
+          <div class="slider-ticks"><span>1 min</span><span>30 min</span><span>1 hr</span><span>2 hr</span></div>
+        </div>
+
+        <!-- Hider ping interval -->
+        <div class="slider-wrap">
+          <div class="slider-header">
+            <label for="hiderPingRange">🫥 HIDER LOCATION PING</label>
+            <span class="slider-val hider-val" id="hiderPingVal">30 s</span>
+          </div>
+          <input type="range" class="hider-range" id="hiderPingRange" min="5" max="300" step="5" value="30">
+          <div class="slider-ticks"><span>5 s</span><span>1 min</span><span>3 min</span><span>5 min</span></div>
+        </div>
+
+        <!-- Seeker ping interval -->
+        <div class="slider-wrap">
+          <div class="slider-header">
+            <label for="seekerPingRange">🔎 SEEKER LOCATION PING</label>
+            <span class="slider-val seeker-val" id="seekerPingVal">60 s</span>
+          </div>
+          <input type="range" class="seeker-range" id="seekerPingRange" min="5" max="300" step="5" value="60">
+          <div class="slider-ticks"><span>5 s</span><span>1 min</span><span>3 min</span><span>5 min</span></div>
+        </div>
+
+        <div class="actions">
+          <button class="secondary" id="saveSettings">Save settings</button>
+          <button id="startBtn">Start game ▶</button>
+        </div>
+        <p class="tiny">Hider and Seeker ping intervals are independent. Shorter intervals = more frequent location reveals.</p>
       </section>
 
+      <!-- ── 03 Live game ──────────────────────────────────────────────── -->
       <section class="card hidden" id="gameCard" style="margin-top:16px">
-        <div class="statusline"><h2 style="margin:0">03 / Live game</h2><span class="pill live" id="gameStatus"><i class="dot"></i> LIVE</span></div>
+        <div class="statusline">
+          <h2 style="margin:0">03 / Live game</h2>
+          <span class="pill live" id="gameStatus"><i class="dot"></i> LIVE</span>
+        </div>
+
+        <!-- Stats -->
         <div class="stats">
           <div class="stat"><strong id="countdown">--:--</strong><span>TIME LEFT</span></div>
           <div class="stat"><strong id="playerCount">0</strong><span>PLAYERS</span></div>
@@ -70,325 +297,372 @@ button{border:0;border-radius:11px;padding:12px 15px;font-weight:800;cursor:poin
           <div class="stat"><strong id="myTeam">—</strong><span>YOUR TEAM</span></div>
         </div>
 
-        <!-- CAUGHT BANNER (Shown if player is caught) -->
+        <!-- Ping timing info (updated live) -->
+        <div class="ping-info" id="pingInfo">
+          <span class="ping-badge hider-ping">🫥 Hider ping: <span id="hiderPingLabel">—</span></span>
+          <span class="ping-badge seeker-ping">🔎 Seeker ping: <span id="seekerPingLabel">—</span></span>
+        </div>
+
+        <!-- Caught banner -->
         <div class="caught-banner hidden" id="caughtBanner">
           <div style="font-size:32px;margin-bottom:6px">🚨</div>
           <h3 style="margin:0 0 6px;color:var(--red);font-size:20px">YOU HAVE BEEN CAUGHT!</h3>
           <p style="margin:0 0 6px" id="caughtByMsg">You were caught by a seeker.</p>
-          <div class="tiny" style="color:var(--muted)">You are out of this game and cannot rejoin with another name.</div>
+          <div class="tiny" style="color:var(--muted)">You are out and cannot rejoin with another name.</div>
         </div>
 
-        <!-- HIDER SECRET CODE CARD (Only shown to Hiders who are not caught) -->
+        <!-- Hider secret code -->
         <div class="catch-code-box hidden" id="hiderCodeBox">
-          <div class="eyebrow" style="margin-bottom:4px">SECRET HIDER CODE</div>
-          <div class="tiny" style="color:var(--muted)">Give this 4-digit code ONLY to a seeker who physically catches/tags you:</div>
+          <div class="eyebrow" style="margin-bottom:4px">🔒 SECRET HIDER CODE</div>
+          <div class="tiny" style="color:var(--muted)">Only reveal this 4-digit code when a seeker physically catches/tags you:</div>
           <div class="catch-code-display" id="myCatchCode">----</div>
-          <div class="tiny" style="color:var(--orange)">⚠️ Keep this code secret until you are physically caught!</div>
+          <div class="tiny" style="color:var(--orange)">⚠️ Keep this code private until you are physically caught!</div>
         </div>
 
-        <!-- SEEKER CATCH INPUT CARD (Only shown to Seekers) -->
+        <!-- Seeker catch input -->
         <div class="seeker-catch-box hidden" id="seekerCatchBox">
           <div class="eyebrow" style="color:var(--orange);margin-bottom:4px">🎯 CATCH A HIDER</div>
-          <div class="tiny" style="color:var(--muted);margin-bottom:8px">Physically tagged a hider? Ask them for their 4-digit code and enter it below:</div>
+          <div class="tiny" style="color:var(--muted);margin-bottom:8px">Physically tagged a hider? Ask for their 4-digit code and enter it below:</div>
           <div class="catch-input-row">
-            <input id="catchCodeInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Enter 4-digit code" autocomplete="off">
+            <input id="catchCodeInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="0000" autocomplete="off">
             <button id="submitCatchBtn" type="button" style="background:var(--orange);color:#1c1308">Catch!</button>
           </div>
           <div id="catchFeedback" class="catch-feedback tiny"></div>
         </div>
 
-        <div class="notice" id="gpsStatus">Enable location to share your position and view all players on the map.</div>
+        <div class="notice" id="gpsStatus">Enable location sharing to appear on the map.</div>
         <div class="actions" style="margin-top:12px">
           <button id="gpsBtn">Enable location sharing</button>
           <button class="secondary" id="leaveBtn">Leave room</button>
         </div>
       </section>
+
     </main>
 
+    <!-- ── Sidebar ──────────────────────────────────────────────────────── -->
     <aside>
+      <!-- Map card -->
       <section class="card" id="mapCard">
-        <div class="statusline"><h2 style="margin:0">Live Map & Locations</h2><span class="pill" id="pingPill">WAITING</span></div>
-        <div id="map" aria-label="Map showing your position and all player locations"></div>
-        <div class="actions" style="margin:0 0 12px">
-          <button class="secondary" id="zoomInBtn" type="button" aria-label="Zoom in">＋ Zoom in</button>
-          <button class="secondary" id="zoomOutBtn" type="button" aria-label="Zoom out">− Zoom out</button>
-          <button class="secondary" id="fitMapBtn" type="button">Fit all markers</button>
+        <div class="statusline">
+          <h2 style="margin:0">Live Map &amp; Locations</h2>
+          <span class="pill" id="pingPill">WAITING</span>
         </div>
-        <div class="tiny" style="margin:0 0 12px">Both hiders and seekers receive all player positions. Hiders are marked in green, Seekers in orange, and your position in blue.</div>
-        <div class="statusline"><h2 style="margin:0;font-size:14px">All Player Locations</h2><span class="tiny" id="locationsCount">0 active</span></div>
-        <div id="targets" class="target-list"><div class="empty">Join a room and start a game to see player locations here.</div></div>
-        <div class="notice">Locations are updated on each scheduled ping. Distances and directions are computed relative to your current GPS position.</div>
+        <div id="map" aria-label="Live player map"></div>
+        <div class="actions" style="margin:0 0 12px">
+          <button class="secondary" id="zoomInBtn" type="button">＋ Zoom</button>
+          <button class="secondary" id="zoomOutBtn" type="button">− Zoom</button>
+          <button class="secondary" id="fitMapBtn" type="button">Fit all</button>
+        </div>
+        <div class="tiny" style="margin:0 0 12px">
+          🔵 You &nbsp;|&nbsp; 🟢 Hiders &nbsp;|&nbsp; 🟠 Seekers &nbsp;|&nbsp; 🔴 Caught
+        </div>
+        <div class="statusline">
+          <h2 style="margin:0;font-size:14px">Player Locations</h2>
+          <span class="tiny" id="locationsCount">0 active</span>
+        </div>
+        <div id="targets" class="target-list">
+          <div class="empty">Join a room and start a game to see locations here.</div>
+        </div>
+        <div class="notice">Locations update on each team's scheduled ping. Distance shown relative to your GPS.</div>
       </section>
 
+      <!-- Players list -->
       <section class="card" style="margin-top:16px">
-        <div class="statusline"><h2 style="margin:0">Players in room</h2><span class="pill" id="lobbyStatus">LOBBY</span></div>
-        <div class="players" id="players"><div class="empty">No players yet.</div></div>
+        <div class="statusline">
+          <h2 style="margin:0">Players in room</h2>
+          <span class="pill" id="lobbyStatus">LOBBY</span>
+        </div>
+        <div class="players" id="players">
+          <div class="empty">No players yet.</div>
+        </div>
       </section>
     </aside>
   </div>
-  <div class="footer">Use only with consent. Play in a safe, permitted area; never enter roads, private property, or restricted locations.</div>
+
+  <div class="footer">Use only with consent. Play in a safe, permitted area.</div>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
 (() => {
+  "use strict";
+
+  // ── DOM shorthand ─────────────────────────────────────────────────────────
   const $ = id => document.getElementById(id);
+
+  // ── App state ──────────────────────────────────────────────────────────────
+  const state = {
+    team: "hiders",
+    joined: false,
+    myId: null,
+    myCoords: null,
+    myCatchCode: null,
+    isCaught: false,
+    currentRoom: "",
+    currentState: null,
+    targets: [],          // latest known locations
+    pingFlash: null       // timeout for ping-pill flash
+  };
+
+  // ── GPS / map state ───────────────────────────────────────────────────────
+  let watchId = null, countdownTimer = null;
+  let map = null, myMarker = null, targetMarkers = new Map();
+  let mapReady = false, hasAutoFitted = false;
+
   const socket = io();
-  let team = "hiders", joined = false, myId = null, myCoords = null, myCatchCode = null, isCaught = false;
-  let currentRoom = "";
-  let watchId = null, countdownTimer = null, currentState = null;
-  let targets = [], map = null, myMarker = null, targetMarkers = new Map(), mapReady = false, hasAutoFitted = false;
 
-  const meters = n => n < 1000 ? `${Math.round(n)} m` : `${(n/1000).toFixed(2)} km`;
-  const safeText = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  // ── Utilities ─────────────────────────────────────────────────────────────
+  const meters = n => n < 1000 ? `${Math.round(n)} m` : `${(n / 1000).toFixed(2)} km`;
+  const safeText = s => String(s ?? "").replace(/[&<>"']/g,
+    c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  const fmtSec = s => s < 60 ? `${s}s` : `${Math.floor(s/60)}m ${s%60 > 0 ? s%60+"s" : ""}`.trim();
 
+  // ── Device / caught persistence ───────────────────────────────────────────
   function getOrCreateDeviceId() {
+    const key = "manhunt_device_id";
     let id = "";
     try {
-      id = localStorage.getItem("manhunt_device_id") || "";
+      id = localStorage.getItem(key) || sessionStorage.getItem(key) || "";
       if (!id) {
-        const match = document.cookie.match(/(?:^|;\s*)manhunt_device_id=([^;]+)/);
-        if (match && match[1]) id = decodeURIComponent(match[1]);
+        const m = document.cookie.match(/(?:^|;\s*)manhunt_device_id=([^;]+)/);
+        id = m ? decodeURIComponent(m[1]) : "";
       }
-      if (!id) {
-        id = "dev_" + Math.random().toString(36).slice(2, 10) + "_" + Date.now().toString(36);
-      }
-      localStorage.setItem("manhunt_device_id", id);
-      sessionStorage.setItem("manhunt_device_id", id);
+      if (!id) id = "dev_" + Math.random().toString(36).slice(2,10) + "_" + Date.now().toString(36);
+      localStorage.setItem(key, id);
+      sessionStorage.setItem(key, id);
       document.cookie = `manhunt_device_id=${encodeURIComponent(id)};path=/;max-age=31536000;SameSite=Lax`;
-    } catch (e) {
-      if (!id) id = "dev_" + Math.random().toString(36).slice(2, 10);
-    }
+    } catch { if (!id) id = "dev_" + Math.random().toString(36).slice(2,10); }
     return id;
   }
 
-  function markPlayerCaughtLocally(room) {
+  function caughtKey(room) { return `manhunt_caught_${encodeURIComponent(room)}`; }
+  function markCaughtLocally(room) {
     try {
-      localStorage.setItem("manhunt_caught_" + room, "true");
-      sessionStorage.setItem("manhunt_caught_" + room, "true");
-      document.cookie = `manhunt_caught_${encodeURIComponent(room)}=true;path=/;max-age=86400;SameSite=Lax`;
-    } catch (e) {}
+      localStorage.setItem(caughtKey(room), "1");
+      document.cookie = `${caughtKey(room)}=1;path=/;max-age=86400;SameSite=Lax`;
+    } catch {}
+  }
+  function isCaughtLocally(room) {
+    try {
+      if (localStorage.getItem(caughtKey(room)) === "1") return true;
+      return !!document.cookie.match(new RegExp(`(?:^|;\\s*)${caughtKey(room)}=1`));
+    } catch { return false; }
   }
 
-  function isPlayerCaughtLocally(room) {
-    try {
-      if (localStorage.getItem("manhunt_caught_" + room) === "true") return true;
-      if (sessionStorage.getItem("manhunt_caught_" + room) === "true") return true;
-      const match = document.cookie.match(new RegExp(`(?:^|;\\s*)manhunt_caught_${encodeURIComponent(room)}=([^;]+)`));
-      if (match && match[1] === "true") return true;
-    } catch (e) {}
-    return false;
+  // ── Slider helper ─────────────────────────────────────────────────────────
+  function initSlider(rangeId, valId, formatter) {
+    const range = $(rangeId), val = $(valId);
+    const update = () => { val.textContent = formatter(Number(range.value)); };
+    range.addEventListener("input", update);
+    update();
   }
 
+  initSlider("durationRange",  "durationVal",  v => v === 1 ? "1 min" : v >= 60 ? `${v/60} hr` : `${v} min`);
+  initSlider("hiderPingRange", "hiderPingVal",  fmtSec);
+  initSlider("seekerPingRange","seekerPingVal", fmtSec);
+
+  // ── Team selection ────────────────────────────────────────────────────────
   function selectTeam(t) {
-    team = t;
+    state.team = t;
     $("hiderChoice").classList.toggle("active", t === "hiders");
     $("seekerChoice").classList.toggle("active", t === "seekers");
   }
   $("hiderChoice").onclick = () => selectTeam("hiders");
   $("seekerChoice").onclick = () => selectTeam("seekers");
   $("randomBtn").onclick = () => $("room").value = "HUNT" + Math.random().toString(36).slice(2,6).toUpperCase();
-  $("room").addEventListener("input", e => e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g,"").slice(0,12));
+  $("room").addEventListener("input", e =>
+    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 12));
 
-  function showMessage(msg, isError=false) {
+  // ── Status messages ───────────────────────────────────────────────────────
+  function showMessage(msg, isError = false) {
     const el = $("gpsStatus");
     el.textContent = msg;
     el.style.borderColor = isError ? "#7b3443" : "";
-    el.style.color = isError ? "#ffb9c0" : "";
+    el.style.color       = isError ? "#ffb9c0" : "";
   }
 
+  // ── Join room ─────────────────────────────────────────────────────────────
   function joinRoom() {
-    const username = $("username").value.trim(), room = $("room").value.trim();
+    const username = $("username").value.trim();
+    const room     = $("room").value.trim();
     if (!username || !room) return alert("Enter a username and room ID.");
-
-    // Client-side anti-rejoin check
-    if (isPlayerCaughtLocally(room)) {
-      return alert("You were caught in this game and cannot rejoin, even with another name!");
-    }
+    if (isCaughtLocally(room)) return alert("You were caught in this game and cannot rejoin, even with another name!");
 
     const deviceId = getOrCreateDeviceId();
     $("joinBtn").disabled = true;
 
-    socket.emit("join-room", {username, room, team, deviceId}, res => {
+    socket.emit("join-room", { username, room, team: state.team, deviceId }, res => {
       $("joinBtn").disabled = false;
       if (!res?.ok) {
-        if (res?.error && res.error.includes("caught")) {
-          markPlayerCaughtLocally(room);
-        }
+        if (res?.error?.includes("caught")) markCaughtLocally(room);
         return alert(res?.error || "Could not join room.");
       }
 
-      joined = true;
-      currentRoom = room;
-      myId = res.playerId;
-      myCatchCode = res.catchCode || null;
-      isCaught = false;
-      currentState = res.state;
+      state.joined      = true;
+      state.currentRoom = room;
+      state.myId        = res.playerId;
+      state.myCatchCode = res.catchCode || null;
+      state.isCaught    = false;
+      state.currentState = res.state;
 
       initMap();
       $("setupCard").classList.add("hidden");
       $("settingsCard").classList.remove("hidden");
       $("roomPill").textContent = "ROOM " + room;
-      $("myTeam").textContent = team === "hiders" ? "HIDER" : "SEEKER";
+      $("myTeam").textContent = state.team === "hiders" ? "HIDER" : "SEEKER";
 
-      if (team === "hiders") {
+      if (state.team === "hiders") {
         $("hiderCodeBox").classList.remove("hidden");
         $("seekerCatchBox").classList.add("hidden");
-        $("myCatchCode").textContent = myCatchCode || "----";
+        $("myCatchCode").textContent = state.myCatchCode || "----";
       } else {
         $("hiderCodeBox").classList.add("hidden");
         $("seekerCatchBox").classList.remove("hidden");
       }
 
-      renderState(currentState);
+      renderState(res.state);
     });
   }
   $("joinBtn").onclick = joinRoom;
 
-  // Seeker Catch Submission
+  // ── Catch code submission ─────────────────────────────────────────────────
   function submitCatchCode() {
     const code = $("catchCodeInput").value.trim();
-    if (!code) {
-      $("catchFeedback").textContent = "Please enter the hider's 4-digit code.";
-      $("catchFeedback").style.color = "var(--red)";
-      return;
-    }
+    if (!code) { setFeedback("Enter the 4-digit code.", false); return; }
 
     $("submitCatchBtn").disabled = true;
     socket.emit("catch-hider", { code }, res => {
       $("submitCatchBtn").disabled = false;
       if (res?.ok) {
-        $("catchFeedback").textContent = res.message;
-        $("catchFeedback").style.color = "var(--green)";
+        setFeedback(res.message, true);
         $("catchCodeInput").value = "";
       } else {
-        $("catchFeedback").textContent = res?.error || "Could not process catch.";
-        $("catchFeedback").style.color = "var(--red)";
+        setFeedback(res?.error || "Could not process.", false);
       }
     });
+  }
+  function setFeedback(msg, ok) {
+    $("catchFeedback").textContent = msg;
+    $("catchFeedback").style.color = ok ? "var(--green)" : "var(--red)";
   }
   $("submitCatchBtn").onclick = submitCatchCode;
-  $("catchCodeInput").addEventListener("keydown", e => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      submitCatchCode();
-    }
-  });
+  $("catchCodeInput").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); submitCatchCode(); } });
 
+  // ── Settings ──────────────────────────────────────────────────────────────
   $("saveSettings").onclick = () => {
     socket.emit("update-settings", {
-      durationMin: Number($("duration").value),
-      pingSec: Number($("pingSec").value)
+      durationMin:  Number($("durationRange").value),
+      hiderPingSec: Number($("hiderPingRange").value),
+      seekerPingSec: Number($("seekerPingRange").value)
     }, res => {
       if (!res?.ok) alert(res?.error || "Couldn't save settings.");
-      else showMessage("Settings saved. Everyone in the room will see location pings at this interval.");
+      else showMessage("Settings saved — everyone in the room sees the new ping intervals.");
     });
   };
 
-  $("startBtn").onclick = () => {
-    socket.emit("start-game", {}, res => {
-      if (!res?.ok) alert(res?.error || "Couldn't start game.");
-    });
-  };
+  $("startBtn").onclick = () =>
+    socket.emit("start-game", {}, res => { if (!res?.ok) alert(res?.error || "Couldn't start game."); });
 
-  $("gpsBtn").onclick = startLocation;
-  $("leaveBtn").onclick = () => {
-    stopLocation();
-    socket.emit("leave-room");
-    resetApp();
-  };
+  // ── Leave / GPS ───────────────────────────────────────────────────────────
+  $("gpsBtn").onclick  = startLocation;
+  $("leaveBtn").onclick = () => { stopLocation(); socket.emit("leave-room"); resetApp(); };
 
   function resetApp() {
-    joined = false; myId = null; currentState = null; targets = []; hasAutoFitted = false; isCaught = false; myCatchCode = null;
-    targetMarkers.forEach(marker => { if (mapReady) map.removeLayer(marker); }); targetMarkers.clear();
-    $("pingPill").textContent = "WAITING"; $("pingPill").style.color = "";
+    Object.assign(state, { joined: false, myId: null, currentState: null, targets: [], hasAutoFitted: false, isCaught: false, myCatchCode: null });
+    targetMarkers.forEach(m => { if (mapReady) map.removeLayer(m); });
+    targetMarkers.clear();
+
+    $("pingPill").textContent   = "WAITING"; $("pingPill").style.color = "";
     $("setupCard").classList.remove("hidden");
-    $("settingsCard").classList.add("hidden");
-    $("gameCard").classList.add("hidden");
-    $("caughtBanner").classList.add("hidden");
-    $("targets").innerHTML = '<div class="empty">Join a room and start a game to see player locations here.</div>';
-    $("players").innerHTML = '<div class="empty">No players yet.</div>';
+    ["settingsCard","gameCard","caughtBanner"].forEach(id => $(id).classList.add("hidden"));
+    $("targets").innerHTML      = '<div class="empty">Join a room and start a game to see locations here.</div>';
+    $("players").innerHTML      = '<div class="empty">No players yet.</div>';
     $("locationsCount").textContent = "0 active";
-    $("catchFeedback").textContent = "";
-    if (countdownTimer) clearInterval(countdownTimer);
+    $("catchFeedback").textContent  = "";
+    hasAutoFitted = false;
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
   }
 
+  // ── GPS location ──────────────────────────────────────────────────────────
   function startLocation() {
-    if (isCaught) return;
-    if (!navigator.geolocation) return showMessage("This browser does not support GPS location.", true);
-    if (!window.isSecureContext && location.hostname !== "localhost") {
-      return showMessage("GPS requires HTTPS. Deploy the app with HTTPS or test on localhost.", true);
-    }
+    if (state.isCaught) return;
+    if (!navigator.geolocation) return showMessage("GPS not supported by this browser.", true);
+    if (!window.isSecureContext && location.hostname !== "localhost")
+      return showMessage("GPS requires HTTPS or localhost.", true);
     if (watchId !== null) return;
+
     showMessage("Requesting location permission…");
     watchId = navigator.geolocation.watchPosition(pos => {
-      myCoords = {lat: pos.coords.latitude, lon: pos.coords.longitude, accuracy: pos.coords.accuracy};
+      state.myCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude, accuracy: pos.coords.accuracy };
       updateMyMapMarker();
-      if (currentState?.status === "playing" && !isCaught) {
-        socket.emit("location-update", myCoords);
-        showMessage(`Location sharing active (±${Math.round(pos.coords.accuracy)} m). All players receive your position at the scheduled interval.`);
+      if (state.currentState?.status === "playing" && !state.isCaught) {
+        socket.emit("location-update", state.myCoords);
+        showMessage(`GPS active · ±${Math.round(pos.coords.accuracy)} m`);
       } else {
-        showMessage(`Location permission granted (±${Math.round(pos.coords.accuracy)} m). Your position will be shared once the game starts.`);
+        showMessage(`GPS ready · ±${Math.round(pos.coords.accuracy)} m — sharing starts when game begins.`);
       }
     }, err => {
-      const messages = {1:"Location permission was denied. Allow location access in browser settings.",2:"Position could not be determined. Try moving outdoors.",3:"GPS timed out. Try again."};
-      showMessage(messages[err.code] || "Could not access location.", true);
+      const msgs = { 1:"Location permission denied.", 2:"Could not determine position — go outdoors.", 3:"GPS timed out." };
+      showMessage(msgs[err.code] || "GPS error.", true);
       stopLocation();
-    }, {enableHighAccuracy:true, maximumAge:5000, timeout:15000});
+    }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 });
   }
 
   function stopLocation() {
     if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-    watchId = null; myCoords = null;
+    watchId = null; state.myCoords = null;
   }
 
-  function renderState(state) {
-    currentState = state;
-    $("lobbyStatus").textContent = state.status.toUpperCase();
-    $("playerCount").textContent = state.players.length;
+  // ── Render room state ─────────────────────────────────────────────────────
+  function renderState(s) {
+    state.currentState = s;
+    $("lobbyStatus").textContent = s.status.toUpperCase();
+    $("playerCount").textContent = s.players.length;
 
-    const uncaughtCount = state.uncaughtHiders ?? state.players.filter(p => p.team === "hiders" && !p.caught).length;
-    const totalHidersCount = state.totalHiders ?? state.players.filter(p => p.team === "hiders").length;
-    $("hidersLeft").textContent = totalHidersCount > 0 ? `${uncaughtCount} / ${totalHidersCount}` : "—";
+    const total    = s.totalHiders ?? s.players.filter(p => p.team === "hiders").length;
+    const uncaught = s.uncaughtHiders ?? s.players.filter(p => p.team === "hiders" && !p.caught).length;
+    $("hidersLeft").textContent = total > 0 ? `${uncaught} / ${total}` : "—";
 
-    $("players").innerHTML = state.players.length ? state.players.map(p =>
-      `<div class="player ${p.caught ? "is-caught" : ""}">
-        <div class="avatar">${safeText(p.username.slice(0,1).toUpperCase())}</div>
-        <div class="meta">
-          <b>${safeText(p.username)}${p.id===myId?" (you)":""}</b>
-          <small>${p.caught ? `Caught by ${safeText(p.caughtBy || 'Seeker')}` : (p.connected ? "Connected" : "Offline")}</small>
-        </div>
-        <span class="teamtag ${p.caught ? "caught" : (p.team==="seekers" ? "seekers" : "hiders")}">
-          ${p.caught ? "CAUGHT" : (p.team==="hiders" ? "HIDER" : "SEEKER")}
-        </span>
-      </div>`
-    ).join("") : '<div class="empty">No players yet.</div>';
+    // Players list
+    $("players").innerHTML = s.players.length
+      ? s.players.map(p => `
+        <div class="player ${p.caught ? "is-caught" : ""}">
+          <div class="avatar">${safeText(p.username[0].toUpperCase())}</div>
+          <div class="meta">
+            <b>${safeText(p.username)}${p.id === state.myId ? " (you)" : ""}</b>
+            <small>${p.caught ? `Caught by ${safeText(p.caughtBy||"Seeker")}` : (p.connected ? "Connected" : "Offline")}</small>
+          </div>
+          <span class="teamtag ${p.caught ? "caught" : p.team}">${p.caught ? "CAUGHT" : p.team === "hiders" ? "HIDER" : "SEEKER"}</span>
+        </div>`).join("")
+      : '<div class="empty">No players yet.</div>';
 
-    // Check if current user is caught in the player list
-    const me = state.players.find(p => p.id === myId);
-    if (me && me.caught && !isCaught) {
-      applyCaughtState(me.caughtBy);
-    }
+    // Catch self if flagged
+    const me = s.players.find(p => p.id === state.myId);
+    if (me?.caught && !state.isCaught) applyCaughtState(me.caughtBy);
 
-    if (state.status === "lobby") {
+    if (s.status === "lobby") {
       $("settingsCard").classList.remove("hidden");
       $("gameCard").classList.add("hidden");
-      $("duration").value = state.settings.durationMin || 30;
-      $("pingSec").value = state.settings.pingSec || state.settings.hiderPingSec || 30;
-      $("startBtn").disabled = false;
-      $("saveSettings").disabled = false;
+      // Sync sliders to server settings
+      $("durationRange").value  = s.settings.durationMin || 30;   $("durationVal").textContent  = `${s.settings.durationMin||30} min`;
+      $("hiderPingRange").value  = s.settings.hiderPingSec || 30;  $("hiderPingVal").textContent  = fmtSec(s.settings.hiderPingSec||30);
+      $("seekerPingRange").value = s.settings.seekerPingSec || 60; $("seekerPingVal").textContent = fmtSec(s.settings.seekerPingSec||60);
+      $("startBtn").disabled = $("saveSettings").disabled = false;
     } else {
       $("settingsCard").classList.add("hidden");
       $("gameCard").classList.remove("hidden");
-      $("startBtn").disabled = true;
-      $("saveSettings").disabled = true;
+      $("startBtn").disabled = $("saveSettings").disabled = true;
 
-      if (state.status === "playing") {
+      // Update live ping info
+      $("hiderPingLabel").textContent  = fmtSec(s.settings.hiderPingSec  || 30);
+      $("seekerPingLabel").textContent = fmtSec(s.settings.seekerPingSec || 60);
+
+      if (s.status === "playing") {
         $("gameStatus").innerHTML = '<i class="dot"></i> LIVE';
         $("gameStatus").classList.add("live");
-        if (state.endsAt) runCountdown(state.endsAt);
-        if (watchId === null && !isCaught) startLocation();
+        if (s.endsAt) runCountdown(s.endsAt);
+        if (watchId === null && !state.isCaught) startLocation();
       } else {
         $("gameStatus").textContent = "ENDED";
         $("gameStatus").classList.remove("live");
@@ -397,86 +671,95 @@ button{border:0;border-radius:11px;padding:12px 15px;font-weight:800;cursor:poin
   }
 
   function applyCaughtState(seekerName) {
-    isCaught = true;
-    markPlayerCaughtLocally(currentRoom);
+    state.isCaught = true;
+    markCaughtLocally(state.currentRoom);
     $("caughtBanner").classList.remove("hidden");
     $("caughtByMsg").textContent = `You were caught by ${safeText(seekerName || "a seeker")}!`;
     $("hiderCodeBox").classList.add("hidden");
     stopLocation();
-    if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
-    showMessage(`🚨 You were caught by ${seekerName || "a seeker"}! You are out of this game and cannot rejoin.`);
+    if (navigator.vibrate) navigator.vibrate([200,100,200,100,400]);
+    showMessage(`🚨 Caught by ${seekerName || "a seeker"}! You are out.`);
   }
 
+  // ── Countdown timer ───────────────────────────────────────────────────────
   function runCountdown(endsAt) {
     if (countdownTimer) clearInterval(countdownTimer);
     const tick = () => {
       const ms = Math.max(0, endsAt - Date.now());
-      $("countdown").textContent = `${String(Math.floor(ms/60000)).padStart(2,"0")}:${String(Math.floor(ms%60000/1000)).padStart(2,"0")}`;
+      $("countdown").textContent =
+        `${String(Math.floor(ms/60000)).padStart(2,"0")}:${String(Math.floor(ms%60000/1000)).padStart(2,"0")}`;
     };
-    tick();
-    countdownTimer = setInterval(tick, 1000);
+    tick(); countdownTimer = setInterval(tick, 1000);
   }
 
+  // ── Socket events ─────────────────────────────────────────────────────────
   socket.on("room-state", renderState);
 
-  socket.on("game-already-playing", () => {
-    if (watchId === null && !isCaught) startLocation();
-    showMessage("Joined an active game. Both hiders and seekers receive all player locations at each scheduled ping.");
+  socket.on("game-already-playing", data => {
+    if (watchId === null && !state.isCaught) startLocation();
+    // Sync sliders if we joined mid-game
+    if (data?.settings) {
+      $("hiderPingLabel").textContent  = fmtSec(data.settings.hiderPingSec  || 30);
+      $("seekerPingLabel").textContent = fmtSec(data.settings.seekerPingSec || 60);
+    }
+    showMessage("Joined an active game — location sharing enabled.");
   });
 
-  socket.on("you-are-caught", data => {
-    applyCaughtState(data.caughtBy);
-  });
+  socket.on("you-are-caught", data => applyCaughtState(data.caughtBy));
 
   socket.on("player-caught", data => {
-    showMessage(`🚨 ${data.seekerName} caught ${data.hiderName}! (${data.uncaughtCount} hider${data.uncaughtCount === 1 ? "" : "s"} left)`);
-    if (currentState) {
-      $("hidersLeft").textContent = `${data.uncaughtCount} / ${data.totalHiders}`;
-    }
+    showMessage(`🚨 ${safeText(data.seekerName)} caught ${safeText(data.hiderName)}! (${data.uncaughtCount} left)`);
+    $("hidersLeft").textContent = `${data.uncaughtCount} / ${data.totalHiders}`;
   });
 
   socket.on("location-ping", data => {
-    const saved = new Map(targets.map(t => [t.id, t]));
-    for (const incoming of (data.locations || [])) saved.set(incoming.id, incoming);
-    targets = [...saved.values()];
+    // Merge into local targets map
+    const saved = new Map(state.targets.map(t => [t.id, t]));
+    for (const loc of (data.locations || [])) saved.set(loc.id, loc);
+    state.targets = [...saved.values()];
 
-    $("pingPill").textContent = "PING RECEIVED";
-    $("pingPill").style.color = "var(--green)";
-    $("locationsCount").textContent = `${targets.length} active`;
+    // Flash ping pill
+    const label = data.teamFilter === "hiders" ? "🫥 HIDER PING" : data.teamFilter === "seekers" ? "🔎 SEEKER PING" : "PING";
+    $("pingPill").textContent   = label;
+    $("pingPill").style.color   = data.teamFilter === "hiders" ? "var(--green)" : "var(--orange)";
+    if (state.pingFlash) clearTimeout(state.pingFlash);
+    state.pingFlash = setTimeout(() => { $("pingPill").textContent = "LIVE"; $("pingPill").style.color = ""; }, 4000);
+
+    $("locationsCount").textContent = `${state.targets.length} tracked`;
 
     renderTargetList();
     updateTargetMapMarkers();
-    showMessage(`Location ping received at ${new Date(data.sentAt).toLocaleTimeString()}. All players' locations are shown.`);
+
+    const teamStr = data.teamFilter === "hiders" ? "Hider" : data.teamFilter === "seekers" ? "Seeker" : "All";
+    showMessage(`${teamStr} locations updated · ${new Date(data.sentAt).toLocaleTimeString()}`);
   });
 
   function renderTargetList() {
-    if (!targets.length) {
-      $("targets").innerHTML = '<div class="empty">No locations received yet. Locations appear when players enable GPS and a ping is sent.</div>';
+    if (!state.targets.length) {
+      $("targets").innerHTML = '<div class="empty">Waiting for first ping…</div>';
       return;
     }
-
-    $("targets").innerHTML = targets.map(t => {
-      const d = myCoords ? distance(myCoords.lat, myCoords.lon, t.lat, t.lon) : null;
-      const bearing = myCoords ? bearingDeg(myCoords.lat, myCoords.lon, t.lat, t.lon) : null;
-      const isSelf = t.id === myId;
-      const isSeeker = t.team === "seekers";
-      const tagClass = t.caught ? "caught" : (isSeeker ? "seekers" : "hiders");
-      const tagLabel = t.caught ? "CAUGHT" : (isSeeker ? "SEEKER" : "HIDER");
+    $("targets").innerHTML = state.targets.map(t => {
+      const isSelf    = t.id === state.myId;
+      const isSeeker  = t.team === "seekers";
+      const tagClass  = t.caught ? "caught" : (isSeeker ? "seekers" : "hiders");
+      const tagLabel  = t.caught ? "CAUGHT" : (isSeeker ? "SEEKER" : "HIDER");
       const distColor = t.caught ? "var(--muted)" : (isSeeker ? "var(--orange)" : "var(--green)");
+      const d = state.myCoords ? distance(state.myCoords.lat, state.myCoords.lon, t.lat, t.lon) : null;
+      const b = state.myCoords ? bearingDeg(state.myCoords.lat, state.myCoords.lon, t.lat, t.lon) : null;
 
-      return `<div class="target ${t.caught ? 'is-caught' : ''}">
+      return `<div class="target">
         <div>
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
             <b>${safeText(t.username)}${isSelf ? " (you)" : ""}</b>
             <span class="teamtag ${tagClass}">${tagLabel}</span>
-            ${t.caught ? '<span class="caught-tag">OUT</span>' : ''}
+            ${t.caught ? '<span class="caught-tag">OUT</span>' : ""}
           </div>
-          <small>
-            ${isSelf ? "Your transmitted location" : (bearing === null ? "Enable GPS for direction" : `${compass(bearing)} · ${Math.round(bearing)}°`)} ·
-            ${t.caught ? `Caught by ${safeText(t.caughtBy || 'Seeker')}` : `Last ping: ${new Date(t.capturedAt).toLocaleTimeString()}`}
+          <small>${isSelf ? "Your location" : (b === null ? "Enable GPS for direction" : `${compass(b)} · ${Math.round(b)}°`)} ·
+            ${t.caught ? `Caught by ${safeText(t.caughtBy||"Seeker")}` : `Ping: ${new Date(t.capturedAt).toLocaleTimeString()}`}
           </small>
         </div>
-        <div class="dist" style="color:${distColor}">${isSelf ? "YOU" : (d === null ? "—" : meters(d))}</div>
+        <div class="dist" style="color:${distColor}">${isSelf ? "YOU" : d === null ? "—" : meters(d)}</div>
       </div>`;
     }).join("");
   }
@@ -485,124 +768,102 @@ button{border:0;border-radius:11px;padding:12px 15px;font-weight:800;cursor:poin
     showMessage(data.message || "Game ended.");
     $("gameStatus").textContent = "ENDED";
     $("gameStatus").classList.remove("live");
-    if (countdownTimer) clearInterval(countdownTimer);
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
     $("countdown").textContent = "00:00";
     stopLocation();
-    alert(data.message || "Game ended!");
+    setTimeout(() => alert(data.message || "Game ended!"), 100);
   });
 
-  socket.on("disconnect", () => { if (joined) showMessage("Connection lost. Reconnecting…", true); });
-  socket.on("connect", () => { if (joined) showMessage("Reconnected."); });
+  socket.on("disconnect", () => { if (state.joined) showMessage("Connection lost. Reconnecting…", true); });
+  socket.on("connect",    () => { if (state.joined) showMessage("Reconnected."); });
 
+  // ── Map ───────────────────────────────────────────────────────────────────
   function initMap() {
     if (mapReady) return;
-    if (!window.L) {
-      $("map").textContent = "Map library could not load. Please check your internet connection.";
-      return;
-    }
-    map = L.map("map", {zoomControl:true}).setView([20.5937, 78.9629], 5);
+    if (!window.L) { $("map").textContent = "Map library failed to load."; return; }
+
+    map = L.map("map", { zoomControl: true }).setView([20.5937, 78.9629], 5);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
     }).addTo(map);
     mapReady = true;
 
-    $("zoomInBtn").onclick = () => map.zoomIn();
+    $("zoomInBtn").onclick  = () => map.zoomIn();
     $("zoomOutBtn").onclick = () => map.zoomOut();
-    $("fitMapBtn").onclick = () => fitAllMarkers(true);
+    $("fitMapBtn").onclick  = () => fitAllMarkers(true);
     setTimeout(() => map.invalidateSize(), 150);
   }
 
   function updateMyMapMarker() {
-    if (!mapReady || !myCoords) return;
-    const ll = [myCoords.lat, myCoords.lon];
-    const popupText = `<b>${safeText($("username").value.trim() || "You")} (You)</b><br>Team: ${team === "hiders" ? "Hider" : "Seeker"}`;
+    if (!mapReady || !state.myCoords) return;
+    const ll      = [state.myCoords.lat, state.myCoords.lon];
+    const popup   = `<b>${safeText($("username").value.trim() || "You")} (You)</b><br>${state.team === "hiders" ? "Hider" : "Seeker"}`;
     if (!myMarker) {
-      myMarker = L.circleMarker(ll, {
-        radius: 9,
-        color: "#ffffff",
-        weight: 2,
-        fillColor: "#38bdf8",
-        fillOpacity: 1
-      }).addTo(map).bindPopup(popupText);
+      myMarker = L.circleMarker(ll, { radius: 9, color: "#fff", weight: 2, fillColor: "#38bdf8", fillOpacity: 1 })
+        .addTo(map).bindPopup(popup);
     } else {
-      myMarker.setLatLng(ll).setPopupContent(popupText);
+      myMarker.setLatLng(ll).setPopupContent(popup);
     }
-    if (!hasAutoFitted && !targets.length) map.setView(ll, Math.max(map.getZoom(), 15));
+    if (!hasAutoFitted && !state.targets.length) map.setView(ll, Math.max(map.getZoom(), 15));
     updateTargetMapMarkers();
   }
 
   function updateTargetMapMarkers() {
     if (!mapReady) return;
     const activeIds = new Set();
-    targets.forEach(t => {
-      if (t.id === myId) return; // Your own marker is handled separately by myMarker
-      activeIds.add(t.id);
-      const ll = [t.lat, t.lon];
-      const isSeeker = t.team === "seekers";
-      let fillColor = isSeeker ? "#f97316" : "#22c55e"; // Orange for seeker, green for hider
-      if (t.caught) fillColor = "#ef4444"; // Red for caught
 
-      let popup = `<b>${safeText(t.username)}</b> [${isSeeker ? "SEEKER" : "HIDER"}]<br>Last ping: ${new Date(t.capturedAt).toLocaleTimeString()}`;
-      if (t.caught) {
-        popup = `<b><del>${safeText(t.username)}</del> [CAUGHT]</b><br>Caught by: ${safeText(t.caughtBy || "Seeker")}`;
-      }
+    state.targets.forEach(t => {
+      if (t.id === state.myId) return;
+      activeIds.add(t.id);
+      const ll        = [t.lat, t.lon];
+      const fillColor = t.caught ? "#ef4444" : (t.team === "seekers" ? "#f97316" : "#22c55e");
+      const popup     = t.caught
+        ? `<b><del>${safeText(t.username)}</del> [CAUGHT]</b><br>By: ${safeText(t.caughtBy||"Seeker")}`
+        : `<b>${safeText(t.username)}</b> [${t.team === "seekers" ? "SEEKER" : "HIDER"}]<br>Ping: ${new Date(t.capturedAt).toLocaleTimeString()}`;
 
       if (!targetMarkers.has(t.id)) {
-        const marker = L.circleMarker(ll, {
-          radius: 8,
-          color: "#ffffff",
-          weight: 2,
-          fillColor: fillColor,
-          fillOpacity: 1
-        }).addTo(map);
-        marker.bindPopup(popup);
-        targetMarkers.set(t.id, marker);
+        const m = L.circleMarker(ll, { radius: 8, color: "#fff", weight: 2, fillColor, fillOpacity: 1 })
+          .addTo(map).bindPopup(popup);
+        targetMarkers.set(t.id, m);
       } else {
-        const marker = targetMarkers.get(t.id);
-        marker.setLatLng(ll).setPopupContent(popup);
-        marker.setStyle({ fillColor });
+        targetMarkers.get(t.id).setLatLng(ll).setPopupContent(popup).setStyle({ fillColor });
       }
     });
 
-    for (const [id, marker] of targetMarkers) {
-      if (!activeIds.has(id)) {
-        map.removeLayer(marker);
-        targetMarkers.delete(id);
-      }
+    for (const [id, m] of targetMarkers) {
+      if (!activeIds.has(id)) { map.removeLayer(m); targetMarkers.delete(id); }
     }
-    if (!hasAutoFitted && targets.length) fitAllMarkers(false);
+    if (!hasAutoFitted && state.targets.length) fitAllMarkers(false);
   }
 
-  function fitAllMarkers(markAsFitted=true) {
+  function fitAllMarkers(markFitted = true) {
     if (!mapReady) return;
     const bounds = [];
-    if (myCoords) bounds.push([myCoords.lat, myCoords.lon]);
-    targets.forEach(t => bounds.push([t.lat, t.lon]));
-    if (bounds.length > 1) {
-      map.fitBounds(bounds, {padding:[30, 30], maxZoom:16});
-    } else if (bounds.length === 1) {
-      map.setView(bounds[0], Math.max(map.getZoom(), 15));
-    }
-    if (markAsFitted) hasAutoFitted = true;
-    else if (targets.length) hasAutoFitted = true;
+    if (state.myCoords) bounds.push([state.myCoords.lat, state.myCoords.lon]);
+    state.targets.forEach(t => bounds.push([t.lat, t.lon]));
+    if (bounds.length > 1)      map.fitBounds(bounds, { padding: [30,30], maxZoom: 16 });
+    else if (bounds.length === 1) map.setView(bounds[0], Math.max(map.getZoom(), 15));
+    if (markFitted || state.targets.length) hasAutoFitted = true;
   }
 
+  // ── Geo math ──────────────────────────────────────────────────────────────
   function distance(lat1, lon1, lat2, lon2) {
-    const R = 6371000, rad = x => x * Math.PI / 180, dLat = rad(lat2 - lat1), dLon = rad(lon2 - lon1);
-    const a = Math.sin(dLat/2)**2 + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dLon/2)**2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const R = 6_371_000, r = x => x * Math.PI / 180;
+    const dLat = r(lat2-lat1), dLon = r(lon2-lon1);
+    const a = Math.sin(dLat/2)**2 + Math.cos(r(lat1)) * Math.cos(r(lat2)) * Math.sin(dLon/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
-
   function bearingDeg(lat1, lon1, lat2, lon2) {
-    const r = x => x * Math.PI / 180, d = r(lon2 - lon1), y = Math.sin(d) * Math.cos(r(lat2));
+    const r = x => x * Math.PI / 180, d = r(lon2-lon1);
+    const y = Math.sin(d) * Math.cos(r(lat2));
     const x = Math.cos(r(lat1)) * Math.sin(r(lat2)) - Math.sin(r(lat1)) * Math.cos(r(lat2)) * Math.cos(d);
-    return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+    return (Math.atan2(y,x) * 180 / Math.PI + 360) % 360;
+  }
+  function compass(deg) {
+    return ["N","NE","E","SE","S","SW","W","NW"][Math.round(deg/45) % 8];
   }
 
-  function compass(deg) {
-    return ["N","NE","E","SE","S","SW","W","NW"][Math.round(deg / 45) % 8];
-  }
 })();
 </script>
 </body>
