@@ -199,6 +199,30 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
           <p style="margin:0;color:var(--muted);font-size:12px">You can now watch the game as a spectator.</p>
         </div>
 
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:18px">
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.035);border:1px solid var(--line-soft);border-radius:18px;padding:10px 14px">
+            <div style="font-size:18px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);display:grid;place-items:center">⏱️</div>
+            <div>
+              <strong id="hiderPingTimer" style="font-size:14px;font-weight:800;color:var(--green)">--</strong>
+              <span style="font-size:9px;color:var(--muted);font-weight:700;display:block">HIDER PING</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.035);border:1px solid var(--line-soft);border-radius:18px;padding:10px 14px">
+            <div style="font-size:18px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);display:grid;place-items:center">⏱️</div>
+            <div>
+              <strong id="seekerPingTimer" style="font-size:14px;font-weight:800;color:var(--orange)">--</strong>
+              <span style="font-size:9px;color:var(--muted);font-weight:700;display:block">SEEKER PING</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.035);border:1px solid var(--line-soft);border-radius:18px;padding:10px 14px">
+            <div style="font-size:18px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);display:grid;place-items:center">📍</div>
+            <div>
+              <strong id="gpsStatus" style="font-size:14px;font-weight:800;color:var(--green)">OFF</strong>
+              <span style="font-size:9px;color:var(--muted);font-weight:700;display:block">GPS STATUS</span>
+            </div>
+          </div>
+        </div>
+
         <div id="seekerCodeBox" class="hidden" style="background:linear-gradient(145deg,#ffb45e20,#ff6e7a20);border:2px solid var(--orange);border-radius:18px;padding:22px;margin-bottom:18px;text-align:center">
           <div style="font-size:36px;margin-bottom:6px">🔎</div>
           <h3 style="margin:0 0 6px;color:var(--orange);font-size:22px;font-weight:900">YOUR SEEKER CODE</h3>
@@ -208,12 +232,15 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
         <div id="hiderCatchBox" class="hidden" style="background:linear-gradient(145deg,#1a3a2a20,#9ef36820);border:2px solid var(--green);border-radius:18px;padding:22px;margin-bottom:18px">
           <h3 style="margin:0 0 12px;color:var(--green);font-size:16px;font-weight:900">⚡ CATCH INCOMING!</h3>
-          <p style="margin:0 0 12px;color:var(--muted);font-size:12px">A seeker is trying to catch you! Enter their code below:</p>
-          <div class="row">
-            <input id="hiderCatchCode" type="text" maxlength="4" placeholder="Enter seeker's code" style="font-size:18px;font-weight:900;text-align:center;letter-spacing:2px">
+          <p style="margin:0 0 18px;color:var(--muted);font-size:12px">A seeker is trying to catch you! Enter their code below:</p>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+            <input id="catchDigit1" type="text" maxlength="1" inputmode="numeric" style="font-size:28px;font-weight:900;text-align:center;letter-spacing:2px;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.35);color:var(--green);padding:16px;border-radius:12px;outline:none;transition:all 0.2s" placeholder="•">
+            <input id="catchDigit2" type="text" maxlength="1" inputmode="numeric" style="font-size:28px;font-weight:900;text-align:center;letter-spacing:2px;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.35);color:var(--green);padding:16px;border-radius:12px;outline:none;transition:all 0.2s" placeholder="•">
+            <input id="catchDigit3" type="text" maxlength="1" inputmode="numeric" style="font-size:28px;font-weight:900;text-align:center;letter-spacing:2px;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.35);color:var(--green);padding:16px;border-radius:12px;outline:none;transition:all 0.2s" placeholder="•">
+            <input id="catchDigit4" type="text" maxlength="1" inputmode="numeric" style="font-size:28px;font-weight:900;text-align:center;letter-spacing:2px;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.35);color:var(--green);padding:16px;border-radius:12px;outline:none;transition:all 0.2s" placeholder="•">
           </div>
-          <button id="submitHiderCatch" class="primary" style="width:100%;margin-top:8px">Submit</button>
-          <p id="hiderCatchFeedback" style="margin:8px 0 0;color:var(--muted);font-size:12px;text-align:center"></p>
+          <button id="submitHiderCatch" class="primary" style="width:100%">Submit code</button>
+          <p id="hiderCatchFeedback" style="margin:12px 0 0;color:var(--muted);font-size:12px;text-align:center"></p>
         </div>
 
         <div style="display:flex;align-items:center;gap:10px;background:rgba(9,15,29,0.85);padding:8px 10px 8px 16px;border-radius:999px;border:1px solid var(--line);margin-bottom:18px">
@@ -277,9 +304,10 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     return;
   }
 
-  const state = { team: urlTeam || "hiders", joined: false, myId: null, isCaught: false };
+  const state = { team: urlTeam || "hiders", joined: false, myId: null, isCaught: false, gameStarted: false, gpsEnabled: false };
   let map = null, targetMarkers = new Map();
   const CLOCK_CIRCUMFERENCE = 2 * Math.PI * 72;
+  let pingTimers = { hiders: null, seekers: null, lastHiderPing: 0, lastSeekerPing: 0, hiderPingSec: 60, seekerPingSec: 90 };
 
   const socket = io();
 
@@ -323,6 +351,10 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   };
 
   $('gpsBtn').onclick = () => {
+    enableLocationSharing();
+  };
+
+  function enableLocationSharing() {
     if (!navigator.geolocation) return alert("Geolocation not supported");
     navigator.geolocation.watchPosition(
       pos => {
@@ -332,9 +364,12 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
       err => alert("Geolocation error: " + err.message),
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
+    state.gpsEnabled = true;
     $('gpsBtn').disabled = true;
     $('gpsBtn').textContent = "📍 Location enabled";
-  };
+    $('gpsStatus').textContent = "ON";
+    $('gpsStatus').style.color = "var(--green)";
+  }
 
   $('copyLinkBtn').onclick = () => {
     $('shareInput').select();
@@ -351,21 +386,38 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   };
 
   $('submitHiderCatch').onclick = () => {
-    const code = $('hiderCatchCode').value.trim();
-    if (!code) return;
+    const code = ($('catchDigit1').value + $('catchDigit2').value + $('catchDigit3').value + $('catchDigit4').value).trim();
+    if (code.length !== 4) return;
     socket.emit("catch-hider", { code }, res => {
       if (res?.ok) {
         $('hiderCatchFeedback').textContent = "✅ " + res.message;
-        $('hiderCatchCode').value = "";
+        $('hiderCatchFeedback').style.color = "var(--green)";
+        $('catchDigit1').value = $('catchDigit2').value = $('catchDigit3').value = $('catchDigit4').value = "";
       } else {
         $('hiderCatchFeedback').textContent = "❌ " + (res?.error || "Failed to catch");
+        $('hiderCatchFeedback').style.color = "var(--red)";
       }
       setTimeout(() => { $('hiderCatchFeedback').textContent = ""; }, 3000);
     });
   };
 
-  $('hiderCatchCode').addEventListener("keyup", e => {
-    if (e.key === "Enter") $('submitHiderCatch').click();
+  // Handle digit input auto-advance
+  ['catchDigit1', 'catchDigit2', 'catchDigit3', 'catchDigit4'].forEach((id, idx) => {
+    const input = $(id);
+    input.addEventListener('input', e => {
+      if (e.target.value && /^\d$/.test(e.target.value)) {
+        if (idx < 3) {
+          $(['catchDigit1', 'catchDigit2', 'catchDigit3', 'catchDigit4'][idx + 1]).focus();
+        }
+      }
+    });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !input.value && idx > 0) {
+        $(['catchDigit1', 'catchDigit2', 'catchDigit3', 'catchDigit4'][idx - 1]).focus();
+      } else if (e.key === 'Enter' && input.value) {
+        $('submitHiderCatch').click();
+      }
+    });
   });
   $('zoomOutBtn').onclick = () => map && map.zoomOut();
   $('fitMapBtn').onclick = () => {
@@ -446,6 +498,11 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
       $('settingsCard').classList.add("hidden");
       $('gameCard').classList.remove("hidden");
       updateCountdown(s.endsAt);
+
+      // Auto-start GPS when game starts (if not caught)
+      if (!state.isCaught && !state.gpsEnabled) {
+        setTimeout(() => enableLocationSharing(), 500);
+      }
     } else if (s.status === "ended") {
       $('gameCard').classList.add("hidden");
       $('gameEndedCard').classList.remove("hidden");
@@ -470,6 +527,12 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   });
 
   socket.on("location-ping", data => {
+    // Update ping timer info
+    pingTimers.hiderPingSec = data.hiderPingSec || 60;
+    pingTimers.seekerPingSec = data.seekerPingSec || 90;
+    pingTimers.lastHiderPing = Date.now();
+    pingTimers.lastSeekerPing = Date.now();
+
     data.locations.forEach(loc => {
       const existing = targetMarkers.get(loc.id);
       if (!loc.caught) {
@@ -486,12 +549,20 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
         targetMarkers.delete(loc.id);
       }
     });
+
+    // Auto-fit map on first location ping after game starts
+    if (!state.gameStarted && targetMarkers.size > 0) {
+      state.gameStarted = true;
+      const bounds = L.latLngBounds([...targetMarkers.values()].map(m => m.getLatLng()));
+      map.fitBounds(bounds.pad(0.15));
+    }
   });
 
   socket.on("game-ended", data => {
     $('gameCard').classList.add("hidden");
     $('gameEndedCard').classList.remove("hidden");
     $('endMsg').textContent = data.message;
+    state.gameStarted = false;
   });
 
   function updateCountdown(endsAt) {
@@ -502,6 +573,12 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
       const totalDuration = endsAt - (endsAt - remaining - Date.now());
       const progress = (totalDuration - remaining) / totalDuration;
       $('clockProgress').style.strokeDashoffset = CLOCK_CIRCUMFERENCE * (1 - Math.min(1, progress));
+
+      // Update ping timers
+      const hiderNextPing = Math.max(0, pingTimers.hiderPingSec - Math.floor((Date.now() - pingTimers.lastHiderPing) / 1000));
+      const seekerNextPing = Math.max(0, pingTimers.seekerPingSec - Math.floor((Date.now() - pingTimers.lastSeekerPing) / 1000));
+      $('hiderPingTimer').textContent = hiderNextPing + 's';
+      $('seekerPingTimer').textContent = seekerNextPing + 's';
 
       if (remaining === 0) clearInterval(interval);
     }, 100);
