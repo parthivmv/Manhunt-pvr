@@ -127,30 +127,30 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
         <h2 style="margin:0 0 18px">01 / Game settings</h2>
         <div class="row" style="grid-template-columns: 1fr; gap: 18px;">
           <div>
-            <label style="display:block;font-size:11px;font-weight:800;letter-spacing:0.07em;color:var(--muted);margin-bottom:7px">⏱ GAME LENGTH</label>
+            <label style="display:block;font-size:11px;font-weight:800;letter-spacing:0.07em;color:var(--muted);margin-bottom:7px">⏱️ GAME LENGTH</label>
             <input id="durationRange" type="range" min="1" max="120" value="30">
             <span id="durationVal" style="display:inline-block;background:rgba(14,23,44,0.85);padding:4px 12px;border-radius:999px;font-size:13px;font-weight:800;border:1px solid var(--line);margin-left:8px">30 min</span>
           </div>
           <div>
-            <label style="display:block;font-size:11px;font-weight:800;letter-spacing:0.07em;color:var(--muted);margin-bottom:7px">🫥 HIDER PING</label>
+            <label style="display:block;font-size:11px;font-weight:800;letter-spacing:0.07em;color:var(--muted);margin-bottom:7px">🪲 HIDER PING</label>
             <input id="hiderPingRange" type="range" class="hider-range" min="5" max="300" value="60">
             <span id="hiderPingVal" style="display:inline-block;background:rgba(14,23,44,0.85);padding:4px 12px;border-radius:999px;font-size:13px;font-weight:800;border:1px solid rgba(158,243,104,0.35);margin-left:8px;color:var(--green)">60 s</span>
           </div>
           <div>
-            <label style="display:block;font-size:11px;font-weight:800;letter-spacing:0.07em;color:var(--muted);margin-bottom:7px">🔎 SEEKER PING</label>
+            <label style="display:block;font-size:11px;font-weight:800;letter-spacing:0.07em;color:var(--muted);margin-bottom:7px">🔦 SEEKER PING</label>
             <input id="seekerPingRange" type="range" class="seeker-range" min="5" max="300" value="90">
             <span id="seekerPingVal" style="display:inline-block;background:rgba(14,23,44,0.85);padding:4px 12px;border-radius:999px;font-size:13px;font-weight:800;border:1px solid rgba(255,180,94,0.35);margin-left:8px;color:var(--orange)">90 s</span>
           </div>
         </div>
         <div class="actions" style="margin-top:18px">
-          <button class="secondary" id="saveSettings">Save settings</button>
-          <button id="startBtn" class="primary">Start game ▶</button>
+          <button class="secondary" id="saveSettings">💾 Save settings</button>
+          <button id="startBtn" class="primary">▶ Start game</button>
         </div>
 
         <div style="display:flex;align-items:center;gap:10px;background:rgba(9,15,29,0.85);padding:8px 10px 8px 16px;border-radius:999px;border:1px solid var(--line);margin-top:18px">
           <span style="font-size:12px;color:var(--muted)">🔗 Invite:</span>
           <input id="shareInput" type="text" readonly style="flex:1;background:transparent;border:none;color:var(--muted);font-size:12px;outline:none;min-width:0">
-          <button id="copyLinkBtn" type="button" style="background:rgba(36,51,80,0.9);color:var(--text);padding:8px 16px;font-size:12px;border-radius:999px;border:1px solid var(--line)">Copy link</button>
+          <button id="copyLinkBtn" type="button" style="background:rgba(36,51,80,0.9);color:var(--text);padding:8px 16px;font-size:12px;border-radius:999px;border:1px solid var(--line)">📋 Copy</button>
         </div>
       </section>
 
@@ -159,17 +159,24 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
         <div style="display:grid;align-items:center;background:radial-gradient(circle at center, rgba(20,32,58,0.95), rgba(9,15,29,0.95));border:1px solid rgba(255,255,255,0.1);border-radius:28px;padding:20px;margin-bottom:18px">
           <div style="position:relative;width:200px;height:200px;display:grid;place-items:center;margin:0 auto">
             <svg viewBox="0 0 200 200" style="width:100%;height:100%;transform:rotate(-90deg);position:absolute">
-              <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
-              <circle id="clockProgress" cx="100" cy="100" r="80" fill="none" stroke="var(--green)" stroke-width="10" stroke-linecap="round" stroke-dasharray="502.65" stroke-dashoffset="0" style="filter:drop-shadow(0 0 8px var(--green-glow));transition:stroke-dashoffset 0.1s linear"/>
-              <circle id="pingRingHider" cx="100" cy="100" r="65" fill="none" stroke="var(--green)" stroke-width="3" stroke-dasharray="408.41" stroke-dashoffset="0" opacity="0.5" style="transition:stroke-dashoffset 0.1s linear"/>
-              <circle id="pingRingSeeker" cx="100" cy="100" r="55" fill="none" stroke="var(--orange)" stroke-width="3" stroke-dasharray="345.58" stroke-dashoffset="0" opacity="0.5" style="transition:stroke-dashoffset 0.1s linear"/>
+              <!-- Outer ring: Main game timer (full circle) -->
+              <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(158,243,104,0.15)" stroke-width="10"/>
+              <circle id="clockProgress" cx="100" cy="100" r="80" fill="none" stroke="var(--green)" stroke-width="10" stroke-linecap="round" stroke-dasharray="502.65" stroke-dashoffset="502.65" style="filter:drop-shadow(0 0 12px var(--green-glow));transition:stroke-dashoffset 0.05s linear"/>
+
+              <!-- Middle ring: Hider ping timer (different color) -->
+              <circle cx="100" cy="100" r="65" fill="none" stroke="rgba(99,222,253,0.15)" stroke-width="3"/>
+              <circle id="pingRingHider" cx="100" cy="100" r="65" fill="none" stroke="#63defd" stroke-width="3" stroke-dasharray="408.41" stroke-dashoffset="408.41" opacity="0.8" style="filter:drop-shadow(0 0 8px rgba(99,222,253,0.5));transition:stroke-dashoffset 0.05s linear"/>
+
+              <!-- Inner ring: Seeker ping timer (different color) -->
+              <circle cx="100" cy="100" r="55" fill="none" stroke="rgba(255,172,54,0.15)" stroke-width="3"/>
+              <circle id="pingRingSeeker" cx="100" cy="100" r="55" fill="none" stroke="#ffac36" stroke-width="3" stroke-dasharray="345.58" stroke-dashoffset="345.58" opacity="0.8" style="filter:drop-shadow(0 0 8px rgba(255,172,54,0.5));transition:stroke-dashoffset 0.05s linear"/>
             </svg>
             <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:1">
               <span id="countdown" style="font-size:36px;font-weight:900;letter-spacing:-0.04em;">--:--</span>
-              <span style="font-size:9px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-top:2px">Remaining</span>
-              <div style="font-size:10px;margin-top:8px;display:flex;gap:10px;justify-content:center">
-                <span style="color:var(--green)">🟢 <span id="hiderPingTimer">--</span>s</span>
-                <span style="color:var(--orange)">🟠 <span id="seekerPingTimer">--</span>s</span>
+              <span style="font-size:9px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-top:2px">Time left</span>
+              <div style="font-size:11px;margin-top:10px;display:flex;gap:14px;justify-content:center;font-weight:700">
+                <span style="color:#63defd">🪲 <span id="hiderPingTimer">--</span>s</span>
+                <span style="color:#ffac36">🔦 <span id="seekerPingTimer">--</span>s</span>
               </div>
             </div>
           </div>
@@ -182,7 +189,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
               </div>
             </div>
             <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.035);border:1px solid var(--line-soft);border-radius:18px;padding:10px 14px">
-              <div style="font-size:18px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);display:grid;place-items:center">🫥</div>
+              <div style="font-size:18px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);display:grid;place-items:center">🪲</div>
               <div>
                 <strong id="hidersLeft" style="font-size:16px;font-weight:800">—</strong>
                 <span style="font-size:9px;color:var(--muted);font-weight:700">UNCAUGHT</span>
@@ -212,11 +219,15 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
           <p style="margin:0;color:var(--muted);font-size:12px">You can now watch the game as a spectator.</p>
         </div>
 
-        <div id="seekerCodeBox" class="hidden" style="background:linear-gradient(145deg,#ffb45e20,#ff6e7a20);border:2px solid var(--orange);border-radius:18px;padding:22px;margin-bottom:18px;text-align:center">
-          <div style="font-size:36px;margin-bottom:6px">🔎</div>
-          <h3 style="margin:0 0 6px;color:var(--orange);font-size:22px;font-weight:900">YOUR SEEKER CODE</h3>
-          <p id="mySeekerCode" style="margin:0;color:var(--green);font-size:32px;font-weight:900;letter-spacing:3px">----</p>
-          <p style="margin:6px 0 0;color:var(--muted);font-size:12px">Share this code with hiders when you catch them</p>
+        <div id="seekerCodeBox" class="hidden" style="background:linear-gradient(145deg,#ffb45e20,#ff6e7a20);border:2px solid var(--orange);border-radius:18px;padding:24px;margin-bottom:18px">
+          <div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap">
+            <div>
+              <p style="margin:0 0 6px;color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase">Your seeker code</p>
+              <p id="mySeekerCode" style="margin:0;color:var(--orange);font-size:48px;font-weight:900;letter-spacing:8px;text-shadow:0 0 16px rgba(255,180,94,0.4)">----</p>
+            </div>
+            <div style="font-size:48px">🔦</div>
+          </div>
+          <p style="margin:12px 0 0;color:var(--muted);font-size:12px;text-align:center">Share this code with hiders when you catch them</p>
         </div>
 
         <div id="hiderCatchBox" class="hidden" style="background:linear-gradient(145deg,#1a3a2a20,#9ef36820);border:2px solid var(--green);border-radius:18px;padding:22px;margin-bottom:18px">
@@ -227,19 +238,19 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
             <input id="catchDigit3" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:32px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.5);color:var(--green);padding:18px;border-radius:14px;outline:none;transition:all 0.2s" placeholder="0">
             <input id="catchDigit4" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:32px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.5);color:var(--green);padding:18px;border-radius:14px;outline:none;transition:all 0.2s" placeholder="0">
           </div>
-          <button id="submitHiderCatch" class="primary" style="width:100%;margin-bottom:12px">Submit code</button>
+          <button id="submitHiderCatch" class="primary" style="width:100%;margin-bottom:12px">⚡ Submit code</button>
           <p id="hiderCatchFeedback" style="margin:0;color:var(--muted);font-size:12px;text-align:center;min-height:18px"></p>
         </div>
 
         <div style="display:flex;align-items:center;gap:10px;background:rgba(9,15,29,0.85);padding:8px 10px 8px 16px;border-radius:999px;border:1px solid var(--line);margin-bottom:18px">
           <span style="font-size:12px;color:var(--muted)">🔗 Share:</span>
           <input id="gameShareInput" type="text" readonly style="flex:1;background:transparent;border:none;color:var(--muted);font-size:12px;outline:none;min-width:0">
-          <button id="gameCopyLinkBtn" type="button" style="background:rgba(36,51,80,0.9);color:var(--text);padding:8px 16px;font-size:12px;border-radius:999px;border:1px solid var(--line)">Copy link</button>
+          <button id="gameCopyLinkBtn" type="button" style="background:rgba(36,51,80,0.9);color:var(--text);padding:8px 16px;font-size:12px;border-radius:999px;border:1px solid var(--line)">📋 Copy</button>
         </div>
 
         <div class="actions">
-          <button id="gpsBtn" class="primary">Enable location sharing</button>
-          <button id="leaveBtn" class="secondary">Leave room</button>
+          <button id="gpsBtn" class="primary">📍 Enable location</button>
+          <button id="leaveBtn" class="secondary">🚪 Leave room</button>
         </div>
       </section>
 
@@ -249,8 +260,8 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
           <p id="endMsg" style="font-size:16px;margin:0;color:var(--text)"></p>
         </div>
         <div class="actions">
-          <button id="backHomeBtn" class="primary">← Back to home</button>
-          <button id="rejoinBtn" class="secondary">Start new game</button>
+          <button id="backHomeBtn" class="primary">← Back home</button>
+          <button id="rejoinBtn" class="secondary">🎮 Play again</button>
         </div>
       </section>
     </main>
@@ -262,7 +273,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
         <div class="actions" style="margin:12px 0">
           <button id="zoomInBtn" class="secondary">＋ Zoom</button>
           <button id="zoomOutBtn" class="secondary">− Zoom</button>
-          <button id="fitMapBtn" class="secondary">Fit all</button>
+          <button id="fitMapBtn" class="secondary">↔ Fit</button>
         </div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:14px">🔵 You | 🟢 Hiders | 🟠 Seekers | 🔴 Caught</div>
         <h3 style="margin:18px 0;font-size:14px">Players</h3>
@@ -292,7 +303,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     return;
   }
 
-  const state = { team: urlTeam || "hiders", joined: false, myId: null, isCaught: false, gameStarted: false, gpsEnabled: false };
+  const state = { team: urlTeam || "hiders", joined: false, myId: null, isCaught: false, gameStarted: false, gpsEnabled: false, lastSettings: null };
   let map = null, targetMarkers = new Map();
   const CLOCK_CIRCUMFERENCE = 2 * Math.PI * 80;
   const HIDER_PING_CIRCUMFERENCE = 2 * Math.PI * 65;
@@ -316,12 +327,21 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     $('seekerPingVal').textContent = `${e.target.value} s`;
   });
 
-  $('saveSettings').onclick = () =>
-    socket.emit("update-settings", {
+  $('saveSettings').onclick = () => {
+    const newSettings = {
       durationMin: Number($('durationRange').value),
       hiderPingSec: Number($('hiderPingRange').value),
       seekerPingSec: Number($('seekerPingRange').value)
-    }, res => { if(res?.ok) alert("Settings updated for all players"); });
+    };
+
+    // Only emit if settings actually changed
+    if (JSON.stringify(state.lastSettings) !== JSON.stringify(newSettings)) {
+      state.lastSettings = newSettings;
+      socket.emit("update-settings", newSettings, res => {
+        if(!res?.ok) alert("Failed to save settings");
+      });
+    }
+  };
 
   $('startBtn').onclick = () =>
     socket.emit("start-game", {}, res => { if(!res?.ok) alert(res?.error); });
@@ -357,7 +377,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     );
     state.gpsEnabled = true;
     $('gpsBtn').disabled = true;
-    $('gpsBtn').textContent = "📍 Location enabled";
+    $('gpsBtn').textContent = "📍 Location on";
     $('gpsStatus').textContent = "ON";
     $('gpsStatus').style.color = "var(--green)";
   }
@@ -366,14 +386,14 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     $('shareInput').select();
     document.execCommand('copy');
     $('copyLinkBtn').textContent = "✓ Copied";
-    setTimeout(() => { $('copyLinkBtn').textContent = "Copy link"; }, 2000);
+    setTimeout(() => { $('copyLinkBtn').textContent = "📋 Copy"; }, 2000);
   };
 
   $('gameCopyLinkBtn').onclick = () => {
     $('gameShareInput').select();
     document.execCommand('copy');
     $('gameCopyLinkBtn').textContent = "✓ Copied";
-    setTimeout(() => { $('gameCopyLinkBtn').textContent = "Copy link"; }, 2000);
+    setTimeout(() => { $('gameCopyLinkBtn').textContent = "📋 Copy"; }, 2000);
   };
 
   $('submitHiderCatch').onclick = () => {
@@ -576,18 +596,18 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
       $('countdown').textContent = fmtTimer(Math.floor(remaining / 1000));
 
-      // Main game timer ring
+      // Main game timer ring - REVERSED (starts full, empties as time counts down)
       const gameProgress = elapsed / totalGameDuration;
       $('clockProgress').style.strokeDashoffset = CLOCK_CIRCUMFERENCE * (1 - Math.min(1, gameProgress));
 
-      // Hider ping timer ring
+      // Hider ping timer ring - REVERSED (starts full, empties as time counts down)
       const hiderTimeSincePing = Math.floor((Date.now() - pingTimers.lastHiderPing) / 1000);
       const hiderPingProgress = hiderTimeSincePing / pingTimers.hiderPingSec;
       $('pingRingHider').style.strokeDashoffset = HIDER_PING_CIRCUMFERENCE * (1 - Math.min(1, hiderPingProgress));
       const hiderNextPing = Math.max(0, pingTimers.hiderPingSec - hiderTimeSincePing);
       $('hiderPingTimer').textContent = hiderNextPing;
 
-      // Seeker ping timer ring
+      // Seeker ping timer ring - REVERSED (starts full, empties as time counts down)
       const seekerTimeSincePing = Math.floor((Date.now() - pingTimers.lastSeekerPing) / 1000);
       const seekerPingProgress = seekerTimeSincePing / pingTimers.seekerPingSec;
       $('pingRingSeeker').style.strokeDashoffset = SEEKER_PING_CIRCUMFERENCE * (1 - Math.min(1, seekerPingProgress));
@@ -595,7 +615,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
       $('seekerPingTimer').textContent = seekerNextPing;
 
       if (remaining === 0) clearInterval(interval);
-    }, 100);
+    }, 50); // Smoother at 50ms intervals (20fps)
   }
 
   socket.on("start-game", () => {
