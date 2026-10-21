@@ -402,6 +402,16 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
         </div>
       `).join('');
     }
+
+    // Handle game status change
+    if (s.status === "playing") {
+      $('settingsCard').classList.add("hidden");
+      $('gameCard').classList.remove("hidden");
+      updateCountdown(s.endsAt);
+    } else if (s.status === "ended") {
+      $('gameCard').classList.add("hidden");
+      $('gameEndedCard').classList.remove("hidden");
+    }
   });
 
   socket.on("game-already-playing", data => {
@@ -451,8 +461,9 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
       const remaining = Math.max(0, endsAt - Date.now());
       $('countdown').textContent = fmtTimer(Math.floor(remaining / 1000));
 
-      const progress = remaining / ((Date.now() - socket.connected ? remaining : 0) + remaining);
-      $('clockProgress').style.strokeDashoffset = CLOCK_CIRCUMFERENCE * (1 - progress);
+      const totalDuration = endsAt - (endsAt - remaining - Date.now());
+      const progress = (totalDuration - remaining) / totalDuration;
+      $('clockProgress').style.strokeDashoffset = CLOCK_CIRCUMFERENCE * (1 - Math.min(1, progress));
 
       if (remaining === 0) clearInterval(interval);
     }, 100);
