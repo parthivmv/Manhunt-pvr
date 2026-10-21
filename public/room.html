@@ -125,7 +125,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     <main>
       <section class="card" id="settingsCard">
         <h2 style="margin:0 0 18px">01 / Game settings</h2>
-        <div class=" row" style="grid-template-columns: 1fr; gap: 18px;">
+        <div class="row" style="grid-template-columns: 1fr; gap: 18px;">
           <div>
             <label style="display:block;font-size:11px;font-weight:800;letter-spacing:0.07em;color:var(--muted);margin-bottom:7px">⏱ GAME LENGTH</label>
             <input id="durationRange" type="range" min="1" max="120" value="30">
@@ -157,36 +157,49 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
       <section class="card hidden" id="gameCard">
         <h2 style="margin:0 0 18px">02 / Live game</h2>
         <div style="display:grid;align-items:center;background:radial-gradient(circle at center, rgba(20,32,58,0.95), rgba(9,15,29,0.95));border:1px solid rgba(255,255,255,0.1);border-radius:28px;padding:20px;margin-bottom:18px">
-          <div style="position:relative;width:164px;height:164px;display:grid;place-items:center">
-            <svg viewBox="0 0 180 180" style="width:100%;height:100%;transform:rotate(-90deg)">
-              <circle cx="90" cy="90" r="72" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="9"/>
-              <circle id="clockProgress" cx="90" cy="90" r="72" fill="none" stroke="var(--green)" stroke-width="9" stroke-linecap="round" stroke-dasharray="452.39" stroke-dashoffset="0" style="filter:drop-shadow(0 0 8px var(--green-glow))"/>
+          <div style="position:relative;width:200px;height:200px;display:grid;place-items:center;margin:0 auto">
+            <svg viewBox="0 0 200 200" style="width:100%;height:100%;transform:rotate(-90deg);position:absolute">
+              <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+              <circle id="clockProgress" cx="100" cy="100" r="80" fill="none" stroke="var(--green)" stroke-width="10" stroke-linecap="round" stroke-dasharray="502.65" stroke-dashoffset="0" style="filter:drop-shadow(0 0 8px var(--green-glow));transition:stroke-dashoffset 0.1s linear"/>
+              <circle id="pingRingHider" cx="100" cy="100" r="65" fill="none" stroke="var(--green)" stroke-width="3" stroke-dasharray="408.41" stroke-dashoffset="0" opacity="0.5" style="transition:stroke-dashoffset 0.1s linear"/>
+              <circle id="pingRingSeeker" cx="100" cy="100" r="55" fill="none" stroke="var(--orange)" stroke-width="3" stroke-dasharray="345.58" stroke-dashoffset="0" opacity="0.5" style="transition:stroke-dashoffset 0.1s linear"/>
             </svg>
-            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
-              <span id="countdown" style="font-size:32px;font-weight:900;letter-spacing:-0.04em;">--:--</span>
-              <span style="font-size:10px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase">Remaining</span>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:1">
+              <span id="countdown" style="font-size:36px;font-weight:900;letter-spacing:-0.04em;">--:--</span>
+              <span style="font-size:9px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-top:2px">Remaining</span>
+              <div style="font-size:10px;margin-top:8px;display:flex;gap:10px;justify-content:center">
+                <span style="color:var(--green)">🟢 <span id="hiderPingTimer">--</span>s</span>
+                <span style="color:var(--orange)">🟠 <span id="seekerPingTimer">--</span>s</span>
+              </div>
             </div>
           </div>
-          <div style="display:grid;gap:10px;margin-top:12px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px">
             <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.035);border:1px solid var(--line-soft);border-radius:18px;padding:10px 14px">
               <div style="font-size:18px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);display:grid;place-items:center">👥</div>
               <div>
-                <strong id="playerCount" style="font-size:18px;font-weight:800">0</strong>
-                <span style="font-size:10px;color:var(--muted);font-weight:700">PLAYERS</span>
+                <strong id="playerCount" style="font-size:16px;font-weight:800">0</strong>
+                <span style="font-size:9px;color:var(--muted);font-weight:700">PLAYERS</span>
               </div>
             </div>
             <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.035);border:1px solid var(--line-soft);border-radius:18px;padding:10px 14px">
               <div style="font-size:18px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);display:grid;place-items:center">🫥</div>
               <div>
-                <strong id="hidersLeft" style="font-size:18px;font-weight:800">—</strong>
-                <span style="font-size:10px;color:var(--muted);font-weight:700">HIDERS</span>
+                <strong id="hidersLeft" style="font-size:16px;font-weight:800">—</strong>
+                <span style="font-size:9px;color:var(--muted);font-weight:700">UNCAUGHT</span>
               </div>
             </div>
             <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.035);border:1px solid var(--line-soft);border-radius:18px;padding:10px 14px">
               <div style="font-size:18px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);display:grid;place-items:center">🏷️</div>
               <div>
-                <strong id="myTeam" style="font-size:18px;font-weight:800">—</strong>
-                <span style="font-size:10px;color:var(--muted);font-weight:700">YOUR TEAM</span>
+                <strong id="myTeam" style="font-size:16px;font-weight:800">—</strong>
+                <span style="font-size:9px;color:var(--muted);font-weight:700">YOUR TEAM</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.035);border:1px solid var(--line-soft);border-radius:18px;padding:10px 14px">
+              <div style="font-size:18px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);display:grid;place-items:center">📍</div>
+              <div>
+                <strong id="gpsStatus" style="font-size:16px;font-weight:800;color:var(--muted)">OFF</strong>
+                <span style="font-size:9px;color:var(--muted);font-weight:700">GPS</span>
               </div>
             </div>
           </div>
@@ -199,48 +212,23 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
           <p style="margin:0;color:var(--muted);font-size:12px">You can now watch the game as a spectator.</p>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:18px">
-          <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.035);border:1px solid var(--line-soft);border-radius:18px;padding:10px 14px">
-            <div style="font-size:18px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);display:grid;place-items:center">⏱️</div>
-            <div>
-              <strong id="hiderPingTimer" style="font-size:14px;font-weight:800;color:var(--green)">--</strong>
-              <span style="font-size:9px;color:var(--muted);font-weight:700;display:block">HIDER PING</span>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.035);border:1px solid var(--line-soft);border-radius:18px;padding:10px 14px">
-            <div style="font-size:18px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);display:grid;place-items:center">⏱️</div>
-            <div>
-              <strong id="seekerPingTimer" style="font-size:14px;font-weight:800;color:var(--orange)">--</strong>
-              <span style="font-size:9px;color:var(--muted);font-weight:700;display:block">SEEKER PING</span>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.035);border:1px solid var(--line-soft);border-radius:18px;padding:10px 14px">
-            <div style="font-size:18px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);display:grid;place-items:center">📍</div>
-            <div>
-              <strong id="gpsStatus" style="font-size:14px;font-weight:800;color:var(--green)">OFF</strong>
-              <span style="font-size:9px;color:var(--muted);font-weight:700;display:block">GPS STATUS</span>
-            </div>
-          </div>
-        </div>
-
         <div id="seekerCodeBox" class="hidden" style="background:linear-gradient(145deg,#ffb45e20,#ff6e7a20);border:2px solid var(--orange);border-radius:18px;padding:22px;margin-bottom:18px;text-align:center">
           <div style="font-size:36px;margin-bottom:6px">🔎</div>
           <h3 style="margin:0 0 6px;color:var(--orange);font-size:22px;font-weight:900">YOUR SEEKER CODE</h3>
-          <p id="mySeekerCode" style="margin:0;color:var(--green);font-size:28px;font-weight:900;letter-spacing:2px">----</p>
+          <p id="mySeekerCode" style="margin:0;color:var(--green);font-size:32px;font-weight:900;letter-spacing:3px">----</p>
           <p style="margin:6px 0 0;color:var(--muted);font-size:12px">Share this code with hiders when you catch them</p>
         </div>
 
         <div id="hiderCatchBox" class="hidden" style="background:linear-gradient(145deg,#1a3a2a20,#9ef36820);border:2px solid var(--green);border-radius:18px;padding:22px;margin-bottom:18px">
-          <h3 style="margin:0 0 12px;color:var(--green);font-size:16px;font-weight:900">⚡ CATCH INCOMING!</h3>
-          <p style="margin:0 0 18px;color:var(--muted);font-size:12px">A seeker is trying to catch you! Enter their code below:</p>
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
-            <input id="catchDigit1" type="text" maxlength="1" inputmode="numeric" style="font-size:28px;font-weight:900;text-align:center;letter-spacing:2px;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.35);color:var(--green);padding:16px;border-radius:12px;outline:none;transition:all 0.2s" placeholder="•">
-            <input id="catchDigit2" type="text" maxlength="1" inputmode="numeric" style="font-size:28px;font-weight:900;text-align:center;letter-spacing:2px;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.35);color:var(--green);padding:16px;border-radius:12px;outline:none;transition:all 0.2s" placeholder="•">
-            <input id="catchDigit3" type="text" maxlength="1" inputmode="numeric" style="font-size:28px;font-weight:900;text-align:center;letter-spacing:2px;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.35);color:var(--green);padding:16px;border-radius:12px;outline:none;transition:all 0.2s" placeholder="•">
-            <input id="catchDigit4" type="text" maxlength="1" inputmode="numeric" style="font-size:28px;font-weight:900;text-align:center;letter-spacing:2px;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.35);color:var(--green);padding:16px;border-radius:12px;outline:none;transition:all 0.2s" placeholder="•">
+          <h3 style="margin:0 0 16px;color:var(--green);font-size:18px;font-weight:900">⚡ ENTER SEEKER CODE</h3>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px">
+            <input id="catchDigit1" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:32px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.5);color:var(--green);padding:18px;border-radius:14px;outline:none;transition:all 0.2s" placeholder="0">
+            <input id="catchDigit2" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:32px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.5);color:var(--green);padding:18px;border-radius:14px;outline:none;transition:all 0.2s" placeholder="0">
+            <input id="catchDigit3" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:32px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.5);color:var(--green);padding:18px;border-radius:14px;outline:none;transition:all 0.2s" placeholder="0">
+            <input id="catchDigit4" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:32px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.5);color:var(--green);padding:18px;border-radius:14px;outline:none;transition:all 0.2s" placeholder="0">
           </div>
-          <button id="submitHiderCatch" class="primary" style="width:100%">Submit code</button>
-          <p id="hiderCatchFeedback" style="margin:12px 0 0;color:var(--muted);font-size:12px;text-align:center"></p>
+          <button id="submitHiderCatch" class="primary" style="width:100%;margin-bottom:12px">Submit code</button>
+          <p id="hiderCatchFeedback" style="margin:0;color:var(--muted);font-size:12px;text-align:center;min-height:18px"></p>
         </div>
 
         <div style="display:flex;align-items:center;gap:10px;background:rgba(9,15,29,0.85);padding:8px 10px 8px 16px;border-radius:999px;border:1px solid var(--line);margin-bottom:18px">
@@ -306,8 +294,11 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
   const state = { team: urlTeam || "hiders", joined: false, myId: null, isCaught: false, gameStarted: false, gpsEnabled: false };
   let map = null, targetMarkers = new Map();
-  const CLOCK_CIRCUMFERENCE = 2 * Math.PI * 72;
-  let pingTimers = { hiders: null, seekers: null, lastHiderPing: 0, lastSeekerPing: 0, hiderPingSec: 60, seekerPingSec: 90 };
+  const CLOCK_CIRCUMFERENCE = 2 * Math.PI * 80;
+  const HIDER_PING_CIRCUMFERENCE = 2 * Math.PI * 65;
+  const SEEKER_PING_CIRCUMFERENCE = 2 * Math.PI * 55;
+  let pingTimers = { lastHiderPing: 0, lastSeekerPing: 0, hiderPingSec: 60, seekerPingSec: 90 };
+  let totalGameDuration = 0;
 
   const socket = io();
 
@@ -330,7 +321,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
       durationMin: Number($('durationRange').value),
       hiderPingSec: Number($('hiderPingRange').value),
       seekerPingSec: Number($('seekerPingRange').value)
-    }, res => { if(res?.ok) console.log("Settings saved"); });
+    }, res => { if(res?.ok) alert("Settings updated for all players"); });
 
   $('startBtn').onclick = () =>
     socket.emit("start-game", {}, res => { if(!res?.ok) alert(res?.error); });
@@ -386,8 +377,13 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   };
 
   $('submitHiderCatch').onclick = () => {
-    const code = ($('catchDigit1').value + $('catchDigit2').value + $('catchDigit3').value + $('catchDigit4').value).trim();
-    if (code.length !== 4) return;
+    const code = ($('catchDigit1').value + $('catchDigit2').value + $('catchDigit3').value + $('catchDigit4').value);
+    if (code.length !== 4 || !/^\d{4}$/.test(code)) {
+      $('hiderCatchFeedback').textContent = "❌ Enter all 4 digits";
+      $('hiderCatchFeedback').style.color = "var(--red)";
+      setTimeout(() => { $('hiderCatchFeedback').textContent = ""; }, 2000);
+      return;
+    }
     socket.emit("catch-hider", { code }, res => {
       if (res?.ok) {
         $('hiderCatchFeedback').textContent = "✅ " + res.message;
@@ -401,24 +397,24 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     });
   };
 
-  // Handle digit input auto-advance
+  // Handle digit input - only allow numbers, auto-advance
   ['catchDigit1', 'catchDigit2', 'catchDigit3', 'catchDigit4'].forEach((id, idx) => {
     const input = $(id);
     input.addEventListener('input', e => {
-      if (e.target.value && /^\d$/.test(e.target.value)) {
-        if (idx < 3) {
-          $(['catchDigit1', 'catchDigit2', 'catchDigit3', 'catchDigit4'][idx + 1]).focus();
-        }
+      e.target.value = e.target.value.replace(/[^0-9]/g, '');
+      if (e.target.value && idx < 3) {
+        $(['catchDigit1', 'catchDigit2', 'catchDigit3', 'catchDigit4'][idx + 1]).focus();
       }
     });
     input.addEventListener('keydown', e => {
       if (e.key === 'Backspace' && !input.value && idx > 0) {
         $(['catchDigit1', 'catchDigit2', 'catchDigit3', 'catchDigit4'][idx - 1]).focus();
-      } else if (e.key === 'Enter' && input.value) {
+      } else if (e.key === 'Enter') {
         $('submitHiderCatch').click();
       }
     });
   });
+
   $('zoomOutBtn').onclick = () => map && map.zoomOut();
   $('fitMapBtn').onclick = () => {
     if (!map || targetMarkers.size === 0) return;
@@ -497,7 +493,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     if (s.status === "playing") {
       $('settingsCard').classList.add("hidden");
       $('gameCard').classList.remove("hidden");
-      updateCountdown(s.endsAt);
+      updateCountdown(s.endsAt, s.settings);
 
       // Auto-start GPS when game starts (if not caught)
       if (!state.isCaught && !state.gpsEnabled) {
@@ -512,7 +508,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   socket.on("game-already-playing", data => {
     $('settingsCard').classList.add("hidden");
     $('gameCard').classList.remove("hidden");
-    updateCountdown(data.endsAt);
+    updateCountdown(data.endsAt, data.settings);
   });
 
   socket.on("player-caught", data => {
@@ -527,7 +523,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   });
 
   socket.on("location-ping", data => {
-    // Update ping timer info
+    // Update ping timer info from server
     pingTimers.hiderPingSec = data.hiderPingSec || 60;
     pingTimers.seekerPingSec = data.seekerPingSec || 90;
     pingTimers.lastHiderPing = Date.now();
@@ -565,20 +561,38 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     state.gameStarted = false;
   });
 
-  function updateCountdown(endsAt) {
+  function updateCountdown(endsAt, settings) {
+    if (settings) {
+      pingTimers.hiderPingSec = settings.hiderPingSec || 60;
+      pingTimers.seekerPingSec = settings.seekerPingSec || 90;
+      totalGameDuration = settings.durationMin * 60 * 1000;
+    }
+    pingTimers.lastHiderPing = Date.now();
+    pingTimers.lastSeekerPing = Date.now();
+
     const interval = setInterval(() => {
       const remaining = Math.max(0, endsAt - Date.now());
+      const elapsed = totalGameDuration - remaining;
+
       $('countdown').textContent = fmtTimer(Math.floor(remaining / 1000));
 
-      const totalDuration = endsAt - (endsAt - remaining - Date.now());
-      const progress = (totalDuration - remaining) / totalDuration;
-      $('clockProgress').style.strokeDashoffset = CLOCK_CIRCUMFERENCE * (1 - Math.min(1, progress));
+      // Main game timer ring
+      const gameProgress = elapsed / totalGameDuration;
+      $('clockProgress').style.strokeDashoffset = CLOCK_CIRCUMFERENCE * (1 - Math.min(1, gameProgress));
 
-      // Update ping timers
-      const hiderNextPing = Math.max(0, pingTimers.hiderPingSec - Math.floor((Date.now() - pingTimers.lastHiderPing) / 1000));
-      const seekerNextPing = Math.max(0, pingTimers.seekerPingSec - Math.floor((Date.now() - pingTimers.lastSeekerPing) / 1000));
-      $('hiderPingTimer').textContent = hiderNextPing + 's';
-      $('seekerPingTimer').textContent = seekerNextPing + 's';
+      // Hider ping timer ring
+      const hiderTimeSincePing = Math.floor((Date.now() - pingTimers.lastHiderPing) / 1000);
+      const hiderPingProgress = hiderTimeSincePing / pingTimers.hiderPingSec;
+      $('pingRingHider').style.strokeDashoffset = HIDER_PING_CIRCUMFERENCE * (1 - Math.min(1, hiderPingProgress));
+      const hiderNextPing = Math.max(0, pingTimers.hiderPingSec - hiderTimeSincePing);
+      $('hiderPingTimer').textContent = hiderNextPing;
+
+      // Seeker ping timer ring
+      const seekerTimeSincePing = Math.floor((Date.now() - pingTimers.lastSeekerPing) / 1000);
+      const seekerPingProgress = seekerTimeSincePing / pingTimers.seekerPingSec;
+      $('pingRingSeeker').style.strokeDashoffset = SEEKER_PING_CIRCUMFERENCE * (1 - Math.min(1, seekerPingProgress));
+      const seekerNextPing = Math.max(0, pingTimers.seekerPingSec - seekerTimeSincePing);
+      $('seekerPingTimer').textContent = seekerNextPing;
 
       if (remaining === 0) clearInterval(interval);
     }, 100);

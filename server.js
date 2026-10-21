@@ -408,10 +408,11 @@ io.on("connection", socket => {
 
     room.settings = {
       durationMin: clamp(data?.durationMin, 1, 240, 30),
-      hiderPingSec: clamp(data?.hiderPingSec, 5, 3600, 30),
-      seekerPingSec: clamp(data?.seekerPingSec, 5, 3600, 60)
+      hiderPingSec: clamp(data?.hiderPingSec, 5, 3600, 60),
+      seekerPingSec: clamp(data?.seekerPingSec, 5, 3600, 90)
     };
-    emitRoom(room);
+    // Broadcast updated settings to ALL clients in the room
+    io.to(room.code).emit("room-state", roomState(room));
     cb({ ok: true });
   });
 
