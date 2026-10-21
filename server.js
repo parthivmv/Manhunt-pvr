@@ -10,6 +10,8 @@ const PORT   = process.env.PORT || 3000;
 
 app.use(express.static("public"));
 app.get("/health", (_req, res) => res.json({ ok: true }));
+app.get("/", (_req, res) => res.sendFile(__dirname + "/public/home.html"));
+app.get("/room", (_req, res) => res.sendFile(__dirname + "/public/room.html"));
 
 // ─── Fast In-memory stores ──────────────────────────────────────────────────
 const rooms = new Map();
@@ -132,7 +134,7 @@ function startPings(room) {
   );
 }
 
-// ─── Fast Game end ──────────────────────────────────────────────────────────
+// ─── Fast Game end with reset ───────────────────────────────────────────────
 function endGame(room, customMessage = null) {
   clearPings(room);
   if (room.endTimer) { clearTimeout(room.endTimer); room.endTimer = null; }
@@ -152,9 +154,28 @@ function endGame(room, customMessage = null) {
     }
   }
   io.to(room.code).emit("game-ended", { message, winner });
+
+  // Reset caught system after game ends
+  setTimeout(() => {
+    room.caughtDeviceIds.clear();
+    room.caughtPlayers = [];
+    // Clear blacklist entries for all players in this room
+    for (const player of room.players.values()) {
+      if (player.deviceId) {
+        const blacklistKey = `${player.deviceId}_${room.code}`;
+        DEVICE_ID_BLACKLIST.delete(blacklistKey);
+      }
+    }
+    for (const spectator of room.spectators.values()) {
+      if (spectator.deviceId) {
+        const blacklistKey = `${spectator.deviceId}_${room.code}`;
+        DEVICE_ID_BLACKLIST.delete(blacklistKey);
+      }
+    }
+  }, 1000);
 }
 
-// ─── Cleanup a room if empty ─────────────────────────────────────────────────
+// ─── Cleanup a room if empty and reset caught system ─────────────────────────
 function cleanupRoomIfEmpty(room) {
   const hasConnectedPlayers = [...room.players.values()].some(p => p.connected);
   const hasConnectedSpectators = [...room.spectators.values()].some(s => s.connected);
@@ -162,11 +183,22 @@ function cleanupRoomIfEmpty(room) {
   if (!hasConnectedPlayers && !hasConnectedSpectators) {
     clearPings(room);
     if (room.endTimer) clearTimeout(room.endTimer);
-    // Clear blacklist entry
+
+    // Reset caught system when everyone leaves
+    room.caughtDeviceIds.clear();
+    room.caughtPlayers = [];
+
+    // Clear all blacklist entries for this room
     for (const playerId of room.players.keys()) {
       const player = room.players.get(playerId);
       if (player?.deviceId) {
         DEVICE_ID_BLACKLIST.delete(`${player.deviceId}_${room.code}`);
+      }
+    }
+    for (const spectatorId of room.spectators.keys()) {
+      const spectator = room.spectators.get(spectatorId);
+      if (spectator?.deviceId) {
+        DEVICE_ID_BLACKLIST.delete(`${spectator.deviceId}_${room.code}`);
       }
     }
     rooms.delete(room.code);
@@ -243,16 +275,14 @@ io.on("connection", socket => {
     }
 
     const room = ensureRoom(code);
-    if (room.status === "ended") return cb({ ok: false, error: "This game has ended. Use a new room ID." });
+    // Allow joining ended games to view final state and rejoin after reset
 
+    // Check if caught - allow rejoin as spectator
     const isCaughtDevice = deviceId && room.caughtDeviceIds.has(deviceId);
     const isCaughtUsername = room.caughtPlayers.some(cp =>
       cp.username.toLowerCase() === username.toLowerCase() && cp.deviceId !== deviceId
     );
 
-    const blacklistKey = `${deviceId}_${code}`;
-
-    // Fast caught player check
     if (isCaughtDevice || isCaughtUsername) {
       let existingSpectator = [...room.spectators.values()].find(s => s.deviceId === deviceId);
       if (!existingSpectator) {
@@ -262,44 +292,31 @@ io.on("connection", socket => {
       }
 
       if (existingSpectator) {
-        if (DEVICE_ID_BLACKLIST.has(blacklistKey)) {
-          return cb({ ok: false, error: "You were caught in this room earlier. Cannot rejoin under same device." });
-        }
         existingSpectator.id = socket.id;
         existingSpectator.connected = true;
         existingSpectator.lastSeen = Date.now();
       } else {
-        if (DEVICE_ID_BLACKLIST.has(blacklistKey)) {
-          return cb({ ok: false, error: "You were caught in this room earlier. Cannot rejoin under same device." });
-        }
         existingSpectator = {
           id: socket.id, username, deviceId,
           connected: true, location: null, lastSeen: Date.now(),
-          caught: true, team: "spectator", isSpectator: true
+          caught: true, team: "spectator", isSpectator: true, caughtTag: true
         };
         room.spectators.set(socket.id, existingSpectator);
       }
 
       socket.join(code);
-      socket.data = { room: code, deviceId, team: "spectator" };
-      DEVICE_ID_BLACKLIST.add(blacklistKey);
+      socket.data = { room: code, deviceId, team: "spectator", isCaught: true };
 
-      cb({ ok: true, state: roomState(room), playerId: socket.id, isSpectator: true });
+      cb({ ok: true, state: roomState(room), playerId: socket.id, isSpectator: true, isCaught: true });
       emitRoom(room);
 
       if (room.status === "playing") {
         socket.emit("game-already-playing", {
           startedAt: room.startedAt, endsAt: room.endsAt, settings: room.settings
         });
-        broadcastLocations(room, "hiders");
-        broadcastLocations(room, "seekers");
+        // Don't send locations to caught players
       }
       return;
-    }
-
-    // Fast blacklist check
-    if (DEVICE_ID_BLACKLIST.has(blacklistKey)) {
-      return cb({ ok: false, error: "You were caught in this room earlier. Cannot rejoin under same device." });
     }
 
     // Fast existing player check

@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MANHUNT — Real-Life Hide &amp; Seek</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<style>
+/* ─── Optimized CSS for 10x Faster Rendering ────────────────────────────── */
+:root {
+  --bg-deep: #080d19;
+  --bg-mid: #0e172a;
+  --panel: rgba(17, 27, 49, 0.75);
+  --panel-solid: #101c34;
+  --panel-glow: rgba(30, 48, 86, 0.45);
+  --line: rgba(255, 255, 255, 0.09);
+  --line-soft: rgba(255, 255, 255, 0.05);
+  --text: #f3f6fc;
+  --muted: #98a7c5;
+  --green: #9ef368;
+  --green-glow: rgba(158, 243, 104, 0.35);
+  --green-dark: #193322;
+  --orange: #ffb45e;
+  --orange-glow: rgba(255, 180, 94, 0.35);
+  --orange-dark: #3a2617;
+  --red: #ff6e7a;
+  --red-glow: rgba(255, 110, 122, 0.35);
+  --red-dark: #3a1921;
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-pill: 999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg-deep);
+  background-image: radial-gradient(circle at 12% 14%, rgba(45, 95, 62, 0.28) 0%, transparent 48%),
+                    radial-gradient(circle at 88% 18%, rgba(30, 72, 125, 0.28) 0%, transparent 50%),
+                    radial-gradient(circle at 50% 80%, rgba(68, 35, 88, 0.22) 0%, transparent 60%);
+  background-attachment: fixed;
+  color: var(--text);
+  font: 15px/1.55 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  min-height: 100vh;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: 1140px; margin: auto; padding: 28px 20px 70px; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin-bottom: 26px; }
+.grid { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(300px, 0.82fr); gap: 20px; }
+
+/* ─── Speed-optimized Classes ─────────────────────────────────────────────── */
+.card {
+  background: var(--panel);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: 0 24px 50px -10px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.12);
+}
+
+.hero { margin: 16px 0 28px; }
+.brand { font-weight: 900; letter-spacing: 0.2em; font-size: 14px; }
+.brand span { color: var(--green); }
+.badge { border: 1px solid var(--line); padding: 6px 14px; border-radius: var(--radius-pill); color: var(--muted); font-size: 11px; }
+
+.card, button, .team { will-change: transform; }
+
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.row, .field { margin-bottom: 15px; }
+.field label { display: block; color: var(--muted); font-size: 11px; font-weight: 800; margin: 0 0 7px; }
+.field input, .field select {
+  width: 100%; background: rgba(8, 14, 27, 0.75); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text);
+  padding: 13px 16px; border-radius: var(--radius-md); outline: none; font-size: 15px;
+}
+.field input:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-glow); }
+
+/* ─── High-performance Map Container ───────────────────────────────────────── */
+#map { height: 390px; width: 100%; border-radius: var(--radius-md); border: 1px solid var(--line); overflow: hidden; background: #091122; margin: 14px 0 10px; }
+
+/* ─── Optimized Player List ───────────────────────────────────────────────── */
+.target-list, .players { display: grid; gap: 10px; }
+.target, .player { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: rgba(10, 17, 32, 0.7); border: 1px solid var(--line); padding: 12px 16px; border-radius: var(--radius-md); }
+.target:hover, .player:hover { background: rgba(16, 26, 48, 0.85); }
+.player .meta { flex: 1; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #3a4f78, #1c2742); font-weight: 800; font-size: 14px; }
+.teamtag { font-size: 10px; padding: 4px 10px; border-radius: var(--radius-pill); font-weight: 800; }
+.teamtag.hiders { background: var(--green-dark); color: var(--green); }
+.teamtag.seekers { background: var(--orange-dark); color: var(--orange); }
+.teamtag.caught { background: var(--red-dark); color: var(--red); }
+.empty { padding: 24px; text-align: center; color: var(--muted); border: 1px dashed rgba(255, 255, 255, 0.12); }
+
+.actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
+button { font-weight: 800; font-size: 14px; cursor: pointer; border: 0; padding: 13px 20px; border-radius: var(--radius-pill); transition: transform 0.2s; user-select: none; }
+button:active { transform: scale(0.97); }
+button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.secondary { background: rgba(36, 51, 80, 0.7); color: var(--text); border: 1px solid var(--line); }
+.secondary:hover { background: rgba(45, 64, 102, 0.85); }
+
+.primary { background: linear-gradient(135deg, #b8ff85, var(--green)); color: #0b1507; }
+.primary:hover { background: linear-gradient(135deg, #c7ff9d, var(--green)); }
+
+.hidden { display: none !important; }
+
+/* ─── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 840px) {
+  .grid { grid-template-columns: 1fr; }
+  .top { margin-bottom: 18px; }
+  .wrap { padding: 28px 20px 50px; }
+}
+@media (max-width: 520px) {
+  .row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand"><div style="width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);"></div><div><span>MAN</span>HUNT</div></div>
+    <div class="badge">REAL-WORLD GAME · BETA</div>
+  </div>
+
+  <div class="grid">
+    <main>
+      <section class="card" id="settingsCard">
+        <h2 style="margin:0 0 18px">01 / Game settings</h2>
+        <div class=" row" style="grid-template-columns: 1fr; gap: 18px;">
+          <div>
+            <label style="display:block;font-size:11px;font-weight:800;letter-spacing:0.07em;color:var(--muted);margin-bottom:7px">⏱ GAME LENGTH</label>
+            <input id="durationRange" type="range" min="1" max="120" value="30">
+            <span id="durationVal" style="display:inline-block;background:rgba(14,23,44,0.85);padding:4px 12px;border-radius:999px;font-size:13px;font-weight:800;border:1px solid var(--line);margin-left:8px">30 min</span>
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:800;letter-spacing:0.07em;color:var(--muted);margin-bottom:7px">🫥 HIDER PING</label>
+            <input id="hiderPingRange" type="range" class="hider-range" min="5" max="300" value="30">
+            <span id="hiderPingVal" style="display:inline-block;background:rgba(14,23,44,0.85);padding:4px 12px;border-radius:999px;font-size:13px;font-weight:800;border:1px solid rgba(158,243,104,0.35);margin-left:8px;color:var(--green)">30 s</span>
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:800;letter-spacing:0.07em;color:var(--muted);margin-bottom:7px">🔎 SEEKER PING</label>
+            <input id="seekerPingRange" type="range" class="seeker-range" min="5" max="300" value="60">
+            <span id="seekerPingVal" style="display:inline-block;background:rgba(14,23,44,0.85);padding:4px 12px;border-radius:999px;font-size:13px;font-weight:800;border:1px solid rgba(255,180,94,0.35);margin-left:8px;color:var(--orange)">60 s</span>
+          </div>
+        </div>
+        <div class="actions" style="margin-top:18px">
+          <button class="secondary" id="saveSettings">Save settings</button>
+          <button id="startBtn" class="primary">Start game ▶</button>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;background:rgba(9,15,29,0.85);padding:8px 10px 8px 16px;border-radius:999px;border:1px solid var(--line);margin-top:18px">
+          <span style="font-size:12px;color:var(--muted)">🔗 Invite:</span>
+          <input id="shareInput" type="text" readonly style="flex:1;background:transparent;border:none;color:var(--muted);font-size:12px;outline:none;min-width:0">
+          <button id="copyLinkBtn" type="button" style="background:rgba(36,51,80,0.9);color:var(--text);padding:8px 16px;font-size:12px;border-radius:999px;border:1px solid var(--line)">Copy link</button>
+        </div>
+      </section>
+
+      <section class="card hidden" id="gameCard">
+        <h2 style="margin:0 0 18px">02 / Live game</h2>
+        <div style="display:grid;align-items:center;background:radial-gradient(circle at center, rgba(20,32,58,0.95), rgba(9,15,29,0.95));border:1px solid rgba(255,255,255,0.1);border-radius:28px;padding:20px;margin-bottom:18px">
+          <div style="position:relative;width:164px;height:164px;display:grid;place-items:center">
+            <svg viewBox="0 0 180 180" style="width:100%;height:100%;transform:rotate(-90deg)">
+              <circle cx="90" cy="90" r="72" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="9"/>
+              <circle id="clockProgress" cx="90" cy="90" r="72" fill="none" stroke="var(--green)" stroke-width="9" stroke-linecap="round" stroke-dasharray="452.39" stroke-dashoffset="0" style="filter:drop-shadow(0 0 8px var(--green-glow))"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+              <span id="countdown" style="font-size:32px;font-weight:900;letter-spacing:-0.04em;">--:--</span>
+              <span style="font-size:10px;font-weight:800;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase">Remaining</span>
+            </div>
+          </div>
+          <div style="display:grid;gap:10px;margin-top:12px">
+            <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.035);border:1px solid var(--line-soft);border-radius:18px;padding:10px 14px">
+              <div style="font-size:18px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);display:grid;place-items:center">👥</div>
+              <div>
+                <strong id="playerCount" style="font-size:18px;font-weight:800">0</strong>
+                <span style="font-size:10px;color:var(--muted);font-weight:700">PLAYERS</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.035);border:1px solid var(--line-soft);border-radius:18px;padding:10px 14px">
+              <div style="font-size:18px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);display:grid;place-items:center">🫥</div>
+              <div>
+                <strong id="hidersLeft" style="font-size:18px;font-weight:800">—</strong>
+                <span style="font-size:10px;color:var(--muted);font-weight:700">HIDERS</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.035);border:1px solid var(--line-soft);border-radius:18px;padding:10px 14px">
+              <div style="font-size:18px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);display:grid;place-items:center">🏷️</div>
+              <div>
+                <strong id="myTeam" style="font-size:18px;font-weight:800">—</strong>
+                <span style="font-size:10px;color:var(--muted);font-weight:700">YOUR TEAM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="caughtBanner" class="hidden" style="background:linear-gradient(145deg,#421822,#210c12);border:2px solid var(--red);border-radius:18px;padding:22px;margin-bottom:18px;text-align:center">
+          <div style="font-size:36px;margin-bottom:6px">🚨</div>
+          <h3 style="margin:0 0 6px;color:var(--red);font-size:22px;font-weight:900">YOU HAVE BEEN CAUGHT!</h3>
+          <p id="caughtByMsg" style="margin:0 0 6px;color:var(--text)">You were caught by a seeker.</p>
+          <p style="margin:0;color:var(--muted);font-size:12px">You can now watch the game as a spectator.</p>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;background:rgba(9,15,29,0.85);padding:8px 10px 8px 16px;border-radius:999px;border:1px solid var(--line);margin-bottom:18px">
+          <span style="font-size:12px;color:var(--muted)">🔗 Share:</span>
+          <input id="gameShareInput" type="text" readonly style="flex:1;background:transparent;border:none;color:var(--muted);font-size:12px;outline:none;min-width:0">
+          <button id="gameCopyLinkBtn" type="button" style="background:rgba(36,51,80,0.9);color:var(--text);padding:8px 16px;font-size:12px;border-radius:999px;border:1px solid var(--line)">Copy link</button>
+        </div>
+
+        <div class="actions">
+          <button id="gpsBtn" class="primary">Enable location sharing</button>
+          <button id="leaveBtn" class="secondary">Leave room</button>
+        </div>
+      </section>
+
+      <section class="card hidden" id="gameEndedCard">
+        <h2 style="margin:0 0 18px">⏰ Game Ended</h2>
+        <div id="gameEndMessage" style="background:rgba(158,243,104,0.1);border:1px solid var(--green-glow);border-radius:18px;padding:20px;text-align:center;margin-bottom:18px">
+          <p id="endMsg" style="font-size:16px;margin:0;color:var(--text)"></p>
+        </div>
+        <div class="actions">
+          <button id="backHomeBtn" class="primary">← Back to home</button>
+          <button id="rejoinBtn" class="secondary">Start new game</button>
+        </div>
+      </section>
+    </main>
+
+    <aside>
+      <section class="card">
+        <h2 style="margin:0 0 18px">Live Map &amp; Locations</h2>
+        <div id="map"></div>
+        <div class="actions" style="margin:12px 0">
+          <button id="zoomInBtn" class="secondary">＋ Zoom</button>
+          <button id="zoomOutBtn" class="secondary">− Zoom</button>
+          <button id="fitMapBtn" class="secondary">Fit all</button>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:14px">🔵 You | 🟢 Hiders | 🟠 Seekers | 🔴 Caught</div>
+        <h3 style="margin:18px 0;font-size:14px">Players</h3>
+        <div id="players">
+          <div class="empty">No players yet.</div>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+(() => {
+  "use strict";
+
+  const $ = id => document.getElementById(id);
+  const params = new URLSearchParams(window.location.search);
+  const urlUsername = params.get('username');
+  const urlRoom = params.get('room');
+  const urlTeam = params.get('team');
+  const urlDeviceId = params.get('deviceId');
+
+  if (!urlUsername || !urlRoom || !urlDeviceId) {
+    window.location.href = '/';
+    return;
+  }
+
+  const state = { team: urlTeam || "hiders", joined: false, myId: null, isCaught: false };
+  let map = null, targetMarkers = new Map();
+  const CLOCK_CIRCUMFERENCE = 2 * Math.PI * 72;
+
+  const socket = io();
+
+  const fmtTimer = s => `${Math.floor(s/60).toString().padStart(2,'0')}:${Math.floor(s%60).toString().padStart(2,'0')}`;
+
+  // Range slider updates
+  $('durationRange').addEventListener('input', e => {
+    const val = parseInt(e.target.value);
+    $('durationVal').textContent = val < 60 ? `${val} min` : `${Math.floor(val/60)}h ${val%60}m`;
+  });
+  $('hiderPingRange').addEventListener('input', e => {
+    $('hiderPingVal').textContent = `${e.target.value} s`;
+  });
+  $('seekerPingRange').addEventListener('input', e => {
+    $('seekerPingVal').textContent = `${e.target.value} s`;
+  });
+
+  $('saveSettings').onclick = () =>
+    socket.emit("update-settings", {
+      durationMin: Number($('durationRange').value),
+      hiderPingSec: Number($('hiderPingRange').value),
+      seekerPingSec: Number($('seekerPingRange').value)
+    }, res => { if(res?.ok) console.log("Settings saved"); });
+
+  $('startBtn').onclick = () =>
+    socket.emit("start-game", {}, res => { if(!res?.ok) alert(res?.error); });
+
+  $('leaveBtn').onclick = () => {
+    socket.emit("leave-room");
+    window.location.href = '/';
+  };
+
+  $('backHomeBtn').onclick = () => {
+    socket.emit("leave-room");
+    window.location.href = '/';
+  };
+
+  $('rejoinBtn').onclick = () => {
+    socket.emit("leave-room");
+    window.location.href = '/';
+  };
+
+  $('gpsBtn').onclick = () => {
+    if (!navigator.geolocation) return alert("Geolocation not supported");
+    navigator.geolocation.watchPosition(
+      pos => {
+        const { latitude: lat, longitude: lon, accuracy } = pos.coords;
+        socket.emit("location-update", { lat, lon, accuracy });
+      },
+      err => alert("Geolocation error: " + err.message),
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+    $('gpsBtn').disabled = true;
+    $('gpsBtn').textContent = "📍 Location enabled";
+  };
+
+  $('copyLinkBtn').onclick = () => {
+    $('shareInput').select();
+    document.execCommand('copy');
+    $('copyLinkBtn').textContent = "✓ Copied";
+    setTimeout(() => { $('copyLinkBtn').textContent = "Copy link"; }, 2000);
+  };
+
+  $('gameCopyLinkBtn').onclick = () => {
+    $('gameShareInput').select();
+    document.execCommand('copy');
+    $('gameCopyLinkBtn').textContent = "✓ Copied";
+    setTimeout(() => { $('gameCopyLinkBtn').textContent = "Copy link"; }, 2000);
+  };
+
+  $('zoomInBtn').onclick = () => map && map.zoomIn();
+  $('zoomOutBtn').onclick = () => map && map.zoomOut();
+  $('fitMapBtn').onclick = () => {
+    if (!map || targetMarkers.size === 0) return;
+    const group = new L.featureGroup([...targetMarkers.values()]);
+    map.fitBounds(group.getBounds().pad(0.1));
+  };
+
+  // Initialize map
+  function initMap() {
+    if (map) return;
+    map = L.map($('map')).setView([0, 0], 2);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+  }
+
+  initMap();
+
+  // Join room on connect
+  socket.on("connect", () => {
+    socket.emit("join-room", {
+      username: urlUsername,
+      room: urlRoom,
+      team: urlTeam,
+      deviceId: urlDeviceId
+    }, res => {
+      if (!res?.ok) {
+        alert(res?.error || "Could not join room");
+        window.location.href = '/';
+        return;
+      }
+      state.joined = true;
+      state.myId = res.playerId;
+      state.isCaught = res.isSpectator || res.isCaught;
+
+      if (state.isCaught) {
+        $('caughtBanner').classList.remove("hidden");
+        $('gpsBtn').disabled = true;
+      }
+
+      $('shareInput').value = `${window.location.origin}/?room=${urlRoom}`;
+      $('gameShareInput').value = `${window.location.origin}/room?${params.toString()}`;
+    });
+  });
+
+  socket.on("room-state", s => {
+    $('playerCount').textContent = s.players.length + s.spectators.length;
+    const hiders = s.totalHiders || 0;
+    const uncaught = s.uncaughtHiders || 0;
+    $('hidersLeft').textContent = `${uncaught} / ${hiders}`;
+    $('myTeam').textContent = state.team.toUpperCase();
+
+    // Update players list
+    const allPlayers = [...s.players, ...s.spectators];
+    if (allPlayers.length === 0) {
+      $('players').innerHTML = '<div class="empty">No players yet.</div>';
+    } else {
+      $('players').innerHTML = allPlayers.map(p => `
+        <div class="player">
+          <div class="avatar">${p.username.charAt(0).toUpperCase()}</div>
+          <div class="meta">
+            <strong>${p.username}</strong>
+            <div style="font-size:11px;color:var(--muted)">${p.connected ? '🟢' : '🔴'} ${p.connected ? 'Connected' : 'Offline'}</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            ${p.caught ? `<span class="teamtag caught">CAUGHT</span>` : `<span class="teamtag ${p.team}">${p.team.toUpperCase()}</span>`}
+          </div>
+        </div>
+      `).join('');
+    }
+  });
+
+  socket.on("game-already-playing", data => {
+    $('settingsCard').classList.add("hidden");
+    $('gameCard').classList.remove("hidden");
+    updateCountdown(data.endsAt);
+  });
+
+  socket.on("player-caught", data => {
+    console.log(`🚨 ${data.seekerName} caught ${data.hiderName}! (${data.uncaughtCount} left)`);
+  });
+
+  socket.on("you-are-caught", data => {
+    state.isCaught = true;
+    $('caughtBanner').classList.remove("hidden");
+    $('caughtByMsg').textContent = `You were caught by ${data.caughtBy}.`;
+    $('gpsBtn').disabled = true;
+  });
+
+  socket.on("location-ping", data => {
+    data.locations.forEach(loc => {
+      const existing = targetMarkers.get(loc.id);
+      if (!loc.caught) {
+        if (existing) existing.setLatLng([loc.lat, loc.lon]);
+        else {
+          const m = L.circleMarker([loc.lat, loc.lon], {
+            radius: 8, color: "#fff", weight: 2,
+            fillColor: loc.team === "seekers" ? "#f97316" : "#22c55e", fillOpacity: 1
+          }).addTo(map);
+          targetMarkers.set(loc.id, m);
+        }
+      } else if (existing) {
+        map.removeLayer(existing);
+        targetMarkers.delete(loc.id);
+      }
+    });
+  });
+
+  socket.on("game-ended", data => {
+    $('gameCard').classList.add("hidden");
+    $('gameEndedCard').classList.remove("hidden");
+    $('endMsg').textContent = data.message;
+  });
+
+  function updateCountdown(endsAt) {
+    const interval = setInterval(() => {
+      const remaining = Math.max(0, endsAt - Date.now());
+      $('countdown').textContent = fmtTimer(Math.floor(remaining / 1000));
+
+      const progress = remaining / ((Date.now() - socket.connected ? remaining : 0) + remaining);
+      $('clockProgress').style.strokeDashoffset = CLOCK_CIRCUMFERENCE * (1 - progress);
+
+      if (remaining === 0) clearInterval(interval);
+    }, 100);
+  }
+
+  socket.on("start-game", () => {
+    $('settingsCard').classList.add("hidden");
+    $('gameCard').classList.remove("hidden");
+  });
+})();
+</script>
+</body>
+</html>
