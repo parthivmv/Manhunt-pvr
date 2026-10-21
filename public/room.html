@@ -240,27 +240,28 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
           <p style="margin:0;color:var(--muted);font-size:12px">You can now watch the game as a spectator.</p>
         </div>
 
-        <div id="seekerCodeBox" class="hidden" style="background:linear-gradient(145deg,#ffb45e20,#ff6e7a20);border:2px solid var(--orange);border-radius:18px;padding:24px;margin-bottom:18px">
-          <div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap">
-            <div>
-              <p style="margin:0 0 6px;color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase">Your seeker code</p>
-              <p id="mySeekerCode" style="margin:0;color:var(--orange);font-size:48px;font-weight:900;letter-spacing:8px;text-shadow:0 0 16px rgba(255,180,94,0.4)">----</p>
-            </div>
-            <div style="font-size:48px">🔦</div>
-          </div>
-          <p style="margin:12px 0 0;color:var(--muted);font-size:12px;text-align:center">Share this code with hiders when you catch them</p>
+        <!-- HIDERS: See their own catch code -->
+        <div id="hiderCodeBox" class="hidden" style="background:linear-gradient(145deg,#1a3a2a20,#9ef36820);border:2px solid var(--green);border-radius:18px;padding:20px;margin-bottom:18px">
+          <p style="margin:0 0 12px;color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase">🪲 Your catch code</p>
+          <p id="myHiderCode" style="margin:0;color:var(--green);font-size:48px;font-weight:900;letter-spacing:8px;text-shadow:0 0 16px rgba(158,243,104,0.4);text-align:center">----</p>
+          <p style="margin:12px 0 0;color:var(--muted);font-size:11px;text-align:center">Share this code with seekers if they catch you</p>
         </div>
 
-        <div id="hiderCatchBox" class="hidden" style="background:linear-gradient(145deg,#1a3a2a20,#9ef36820);border:2px solid var(--green);border-radius:18px;padding:22px;margin-bottom:18px">
-          <h3 style="margin:0 0 16px;color:var(--green);font-size:18px;font-weight:900">⚡ ENTER SEEKER CODE</h3>
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px">
-            <input id="catchDigit1" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:40px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.6);color:var(--green);padding:12px 0;border-radius:12px;outline:none;transition:all 0.2s;aspect-ratio:1;line-height:1" placeholder="">
-            <input id="catchDigit2" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:40px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.6);color:var(--green);padding:12px 0;border-radius:12px;outline:none;transition:all 0.2s;aspect-ratio:1;line-height:1" placeholder="">
-            <input id="catchDigit3" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:40px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.6);color:var(--green);padding:12px 0;border-radius:12px;outline:none;transition:all 0.2s;aspect-ratio:1;line-height:1" placeholder="">
-            <input id="catchDigit4" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:40px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:2px solid rgba(158,243,104,0.6);color:var(--green);padding:12px 0;border-radius:12px;outline:none;transition:all 0.2s;aspect-ratio:1;line-height:1" placeholder="">
+        <!-- SEEKERS: Input to catch hiders -->
+        <div id="seekerCatchBox" class="hidden" style="background:linear-gradient(145deg,#ffb45e20,#ff6e7a20);border:2px solid var(--orange);border-radius:14px;padding:16px;margin-bottom:18px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div>
+              <p style="margin:0;color:var(--muted);font-size:11px;font-weight:800">🔦 CATCH HIDER</p>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px">
+                <input id="seekerDigit1" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:20px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:1px solid rgba(255,172,54,0.6);color:var(--orange);padding:8px 0;border-radius:8px;outline:none;transition:all 0.2s;aspect-ratio:1;line-height:1" placeholder="">
+                <input id="seekerDigit2" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:20px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:1px solid rgba(255,172,54,0.6);color:var(--orange);padding:8px 0;border-radius:8px;outline:none;transition:all 0.2s;aspect-ratio:1;line-height:1" placeholder="">
+                <input id="seekerDigit3" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:20px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:1px solid rgba(255,172,54,0.6);color:var(--orange);padding:8px 0;border-radius:8px;outline:none;transition:all 0.2s;aspect-ratio:1;line-height:1" placeholder="">
+                <input id="seekerDigit4" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:20px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:1px solid rgba(255,172,54,0.6);color:var(--orange);padding:8px 0;border-radius:8px;outline:none;transition:all 0.2s;aspect-ratio:1;line-height:1" placeholder="">
+              </div>
+            </div>
+            <button id="submitSeekerCatch" class="primary" style="padding:12px 16px;font-size:12px;height:fit-content">⚡ Catch</button>
           </div>
-          <button id="submitHiderCatch" class="primary" style="width:100%;margin-bottom:12px">⚡ Submit code</button>
-          <p id="hiderCatchFeedback" style="margin:0;color:var(--muted);font-size:12px;text-align:center;min-height:18px"></p>
+          <p id="seekerCatchFeedback" style="margin:10px 0 0;color:var(--muted);font-size:11px;text-align:center;min-height:16px"></p>
         </div>
 
         <div style="display:flex;align-items:center;gap:10px;background:rgba(9,15,29,0.85);padding:8px 10px 8px 16px;border-radius:999px;border:1px solid var(--line);margin-bottom:18px">
@@ -417,41 +418,41 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     setTimeout(() => { $('gameCopyLinkBtn').textContent = "📋 Copy"; }, 2000);
   };
 
-  $('submitHiderCatch').onclick = () => {
-    const code = ($('catchDigit1').value + $('catchDigit2').value + $('catchDigit3').value + $('catchDigit4').value);
+  $('submitSeekerCatch').onclick = () => {
+    const code = ($('seekerDigit1').value + $('seekerDigit2').value + $('seekerDigit3').value + $('seekerDigit4').value);
     if (code.length !== 4 || !/^\d{4}$/.test(code)) {
-      $('hiderCatchFeedback').textContent = "❌ Enter all 4 digits";
-      $('hiderCatchFeedback').style.color = "var(--red)";
-      setTimeout(() => { $('hiderCatchFeedback').textContent = ""; }, 2000);
+      $('seekerCatchFeedback').textContent = "❌ Enter all 4 digits";
+      $('seekerCatchFeedback').style.color = "var(--red)";
+      setTimeout(() => { $('seekerCatchFeedback').textContent = ""; }, 2000);
       return;
     }
     socket.emit("catch-hider", { code }, res => {
       if (res?.ok) {
-        $('hiderCatchFeedback').textContent = "✅ " + res.message;
-        $('hiderCatchFeedback').style.color = "var(--green)";
-        $('catchDigit1').value = $('catchDigit2').value = $('catchDigit3').value = $('catchDigit4').value = "";
+        $('seekerCatchFeedback').textContent = "✅ " + res.message;
+        $('seekerCatchFeedback').style.color = "var(--green)";
+        $('seekerDigit1').value = $('seekerDigit2').value = $('seekerDigit3').value = $('seekerDigit4').value = "";
       } else {
-        $('hiderCatchFeedback').textContent = "❌ " + (res?.error || "Failed to catch");
-        $('hiderCatchFeedback').style.color = "var(--red)";
+        $('seekerCatchFeedback').textContent = "❌ " + (res?.error || "Failed");
+        $('seekerCatchFeedback').style.color = "var(--red)";
       }
-      setTimeout(() => { $('hiderCatchFeedback').textContent = ""; }, 3000);
+      setTimeout(() => { $('seekerCatchFeedback').textContent = ""; }, 3000);
     });
   };
 
-  // Handle digit input - only allow numbers, auto-advance
-  ['catchDigit1', 'catchDigit2', 'catchDigit3', 'catchDigit4'].forEach((id, idx) => {
+  // Handle seeker digit input - only allow numbers, auto-advance
+  ['seekerDigit1', 'seekerDigit2', 'seekerDigit3', 'seekerDigit4'].forEach((id, idx) => {
     const input = $(id);
     input.addEventListener('input', e => {
       e.target.value = e.target.value.replace(/[^0-9]/g, '');
       if (e.target.value && idx < 3) {
-        $(['catchDigit1', 'catchDigit2', 'catchDigit3', 'catchDigit4'][idx + 1]).focus();
+        $(['seekerDigit1', 'seekerDigit2', 'seekerDigit3', 'seekerDigit4'][idx + 1]).focus();
       }
     });
     input.addEventListener('keydown', e => {
       if (e.key === 'Backspace' && !input.value && idx > 0) {
-        $(['catchDigit1', 'catchDigit2', 'catchDigit3', 'catchDigit4'][idx - 1]).focus();
+        $(['seekerDigit1', 'seekerDigit2', 'seekerDigit3', 'seekerDigit4'][idx - 1]).focus();
       } else if (e.key === 'Enter') {
-        $('submitHiderCatch').click();
+        $('submitSeekerCatch').click();
       }
     });
   });
@@ -492,11 +493,11 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
       if (state.isCaught) {
         $('caughtBanner').classList.remove("hidden");
         $('gpsBtn').disabled = true;
-      } else if (state.team === "seekers" && res.seekerCode) {
-        $('seekerCodeBox').classList.remove("hidden");
-        $('mySeekerCode').textContent = res.seekerCode;
-      } else if (state.team === "hiders") {
-        $('hiderCatchBox').classList.remove("hidden");
+      } else if (state.team === "hiders" && res.catchCode) {
+        $('hiderCodeBox').classList.remove("hidden");
+        $('myHiderCode').textContent = res.catchCode;
+      } else if (state.team === "seekers") {
+        $('seekerCatchBox').classList.remove("hidden");
       }
 
       $('shareInput').value = `${window.location.origin}/?room=${urlRoom}`;
@@ -564,7 +565,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   });
 
   socket.on("location-ping", data => {
-    // Update ping timer info from server
+    // Update ping timer info from server and reset timers
     pingTimers.hiderPingSec = data.hiderPingSec || 60;
     pingTimers.seekerPingSec = data.seekerPingSec || 90;
     pingTimers.lastHiderPing = Date.now();
@@ -612,8 +613,9 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     pingTimers.lastSeekerPing = Date.now();
 
     const mainClockCircumference = 2 * Math.PI * 80;
+    let animationId = null;
 
-    const interval = setInterval(() => {
+    const updateFrame = () => {
       const remaining = Math.max(0, endsAt - Date.now());
       const elapsed = totalGameDuration - remaining;
 
@@ -624,7 +626,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
       $('mainCountdown').textContent = fmtTimer(Math.floor(remaining / 1000));
 
       // ─── Hider Ping Timer (independent, runs from full to empty every hiderPingSec) ───
-      const hiderTimeSincePing = Math.floor((Date.now() - pingTimers.lastHiderPing) / 1000);
+      const hiderTimeSincePing = (Date.now() - pingTimers.lastHiderPing) / 1000;
       const hiderProgress = Math.min(1, hiderTimeSincePing / pingTimers.hiderPingSec);
       const hiderOffset = mainClockCircumference * (1 - hiderProgress);
       $('hiderTimerRing').style.strokeDashoffset = hiderOffset;
@@ -632,15 +634,21 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
       $('hiderCountdown').textContent = fmtTimer(hiderTimeLeft);
 
       // ─── Seeker Ping Timer (independent, runs from full to empty every seekerPingSec) ───
-      const seekerTimeSincePing = Math.floor((Date.now() - pingTimers.lastSeekerPing) / 1000);
+      const seekerTimeSincePing = (Date.now() - pingTimers.lastSeekerPing) / 1000;
       const seekerProgress = Math.min(1, seekerTimeSincePing / pingTimers.seekerPingSec);
       const seekerOffset = mainClockCircumference * (1 - seekerProgress);
       $('seekerTimerRing').style.strokeDashoffset = seekerOffset;
       const seekerTimeLeft = Math.max(0, pingTimers.seekerPingSec - seekerTimeSincePing);
       $('seekerCountdown').textContent = fmtTimer(seekerTimeLeft);
 
-      if (remaining === 0) clearInterval(interval);
-    }, 50); // Smooth 50ms updates
+      if (remaining > 0) {
+        animationId = requestAnimationFrame(updateFrame);
+      } else {
+        if (animationId) cancelAnimationFrame(animationId);
+      }
+    };
+
+    updateFrame();
   }
 
   socket.on("start-game", () => {
