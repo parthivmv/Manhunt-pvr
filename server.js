@@ -34,6 +34,14 @@ function generateCatchCode(room) {
   return code;
 }
 
+/** Generate a unique 4-digit seeker code for catching hiders. */
+function generateSeekerCode(room) {
+  const used = new Set([...room.players.values()].map(p => p.seekerCode).filter(Boolean));
+  let code, attempts = 0;
+  do { code = String(Math.floor(1000 + Math.random() * 9000)); } while (used.has(code) && ++attempts < 200);
+  return code;
+}
+
 // ─── Fast Serialisers (no allocations) ───────────────────────────────────────
 function publicPlayer(p) {
   return {
@@ -77,7 +85,7 @@ function ensureRoom(code) {
       spectators: new Map(),
       caughtDeviceIds: new Set(),
       caughtPlayers: [],
-      settings: { durationMin: 30, hiderPingSec: 30, seekerPingSec: 60 },
+      settings: { durationMin: 30, hiderPingSec: 60, seekerPingSec: 90 },
       startedAt: null,
       endsAt: null,
       pingTimers: { hiders: null, seekers: null },
@@ -230,17 +238,18 @@ io.on("connection", socket => {
 
     const team = data?.team === "seekers" ? "seekers" : "hiders";
     const catchCode = team === "hiders" ? generateCatchCode(room) : null;
+    const seekerCode = team === "seekers" ? generateSeekerCode(room) : null;
     const player = {
       id: socket.id, username, team, deviceId,
       connected: true, location: null, lastSeen: Date.now(),
-      caught: false, catchCode, isOwner: true
+      caught: false, catchCode, seekerCode, isOwner: true
     };
 
     room.players.set(socket.id, player);
     socket.join(code);
     socket.data = { room: code, deviceId, team, isCreator: true };
 
-    cb({ ok: true, state: roomState(room), playerId: socket.id, catchCode, isCreator: true });
+    cb({ ok: true, state: roomState(room), playerId: socket.id, catchCode, seekerCode, isCreator: true });
     emitRoom(room);
 
     if (room.status === "playing") {
@@ -346,7 +355,8 @@ io.on("connection", socket => {
         ok: true,
         state: roomState(room),
         playerId: socket.id,
-        catchCode: existingPlayer.team === "hiders" ? existingPlayer.catchCode || generateCatchCode(room) : null
+        catchCode: existingPlayer.team === "hiders" ? existingPlayer.catchCode || generateCatchCode(room) : null,
+        seekerCode: existingPlayer.team === "seekers" ? existingPlayer.seekerCode || generateSeekerCode(room) : null
       });
       emitRoom(room);
 
@@ -369,17 +379,18 @@ io.on("connection", socket => {
     }
 
     const catchCode = team === "hiders" ? generateCatchCode(room) : null;
+    const seekerCode = team === "seekers" ? generateSeekerCode(room) : null;
     const player = {
       id: socket.id, username, team, deviceId,
       connected: true, location: null, lastSeen: Date.now(),
-      caught: false, catchCode
+      caught: false, catchCode, seekerCode
     };
 
     room.players.set(socket.id, player);
     socket.join(code);
     socket.data = { room: code, deviceId, team };
 
-    cb({ ok: true, state: roomState(room), playerId: socket.id, catchCode });
+    cb({ ok: true, state: roomState(room), playerId: socket.id, catchCode, seekerCode });
     emitRoom(room);
 
     if (room.status === "playing") {

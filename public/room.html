@@ -133,13 +133,13 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
           </div>
           <div>
             <label style="display:block;font-size:11px;font-weight:800;letter-spacing:0.07em;color:var(--muted);margin-bottom:7px">🫥 HIDER PING</label>
-            <input id="hiderPingRange" type="range" class="hider-range" min="5" max="300" value="30">
-            <span id="hiderPingVal" style="display:inline-block;background:rgba(14,23,44,0.85);padding:4px 12px;border-radius:999px;font-size:13px;font-weight:800;border:1px solid rgba(158,243,104,0.35);margin-left:8px;color:var(--green)">30 s</span>
+            <input id="hiderPingRange" type="range" class="hider-range" min="5" max="300" value="60">
+            <span id="hiderPingVal" style="display:inline-block;background:rgba(14,23,44,0.85);padding:4px 12px;border-radius:999px;font-size:13px;font-weight:800;border:1px solid rgba(158,243,104,0.35);margin-left:8px;color:var(--green)">60 s</span>
           </div>
           <div>
             <label style="display:block;font-size:11px;font-weight:800;letter-spacing:0.07em;color:var(--muted);margin-bottom:7px">🔎 SEEKER PING</label>
-            <input id="seekerPingRange" type="range" class="seeker-range" min="5" max="300" value="60">
-            <span id="seekerPingVal" style="display:inline-block;background:rgba(14,23,44,0.85);padding:4px 12px;border-radius:999px;font-size:13px;font-weight:800;border:1px solid rgba(255,180,94,0.35);margin-left:8px;color:var(--orange)">60 s</span>
+            <input id="seekerPingRange" type="range" class="seeker-range" min="5" max="300" value="90">
+            <span id="seekerPingVal" style="display:inline-block;background:rgba(14,23,44,0.85);padding:4px 12px;border-radius:999px;font-size:13px;font-weight:800;border:1px solid rgba(255,180,94,0.35);margin-left:8px;color:var(--orange)">90 s</span>
           </div>
         </div>
         <div class="actions" style="margin-top:18px">
@@ -197,6 +197,23 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
           <h3 style="margin:0 0 6px;color:var(--red);font-size:22px;font-weight:900">YOU HAVE BEEN CAUGHT!</h3>
           <p id="caughtByMsg" style="margin:0 0 6px;color:var(--text)">You were caught by a seeker.</p>
           <p style="margin:0;color:var(--muted);font-size:12px">You can now watch the game as a spectator.</p>
+        </div>
+
+        <div id="seekerCodeBox" class="hidden" style="background:linear-gradient(145deg,#ffb45e20,#ff6e7a20);border:2px solid var(--orange);border-radius:18px;padding:22px;margin-bottom:18px;text-align:center">
+          <div style="font-size:36px;margin-bottom:6px">🔎</div>
+          <h3 style="margin:0 0 6px;color:var(--orange);font-size:22px;font-weight:900">YOUR SEEKER CODE</h3>
+          <p id="mySeekerCode" style="margin:0;color:var(--green);font-size:28px;font-weight:900;letter-spacing:2px">----</p>
+          <p style="margin:6px 0 0;color:var(--muted);font-size:12px">Share this code with hiders when you catch them</p>
+        </div>
+
+        <div id="hiderCatchBox" class="hidden" style="background:linear-gradient(145deg,#1a3a2a20,#9ef36820);border:2px solid var(--green);border-radius:18px;padding:22px;margin-bottom:18px">
+          <h3 style="margin:0 0 12px;color:var(--green);font-size:16px;font-weight:900">⚡ CATCH INCOMING!</h3>
+          <p style="margin:0 0 12px;color:var(--muted);font-size:12px">A seeker is trying to catch you! Enter their code below:</p>
+          <div class="row">
+            <input id="hiderCatchCode" type="text" maxlength="4" placeholder="Enter seeker's code" style="font-size:18px;font-weight:900;text-align:center;letter-spacing:2px">
+          </div>
+          <button id="submitHiderCatch" class="primary" style="width:100%;margin-top:8px">Submit</button>
+          <p id="hiderCatchFeedback" style="margin:8px 0 0;color:var(--muted);font-size:12px;text-align:center"></p>
         </div>
 
         <div style="display:flex;align-items:center;gap:10px;background:rgba(9,15,29,0.85);padding:8px 10px 8px 16px;border-radius:999px;border:1px solid var(--line);margin-bottom:18px">
@@ -333,7 +350,23 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     setTimeout(() => { $('gameCopyLinkBtn').textContent = "Copy link"; }, 2000);
   };
 
-  $('zoomInBtn').onclick = () => map && map.zoomIn();
+  $('submitHiderCatch').onclick = () => {
+    const code = $('hiderCatchCode').value.trim();
+    if (!code) return;
+    socket.emit("catch-hider", { code }, res => {
+      if (res?.ok) {
+        $('hiderCatchFeedback').textContent = "✅ " + res.message;
+        $('hiderCatchCode').value = "";
+      } else {
+        $('hiderCatchFeedback').textContent = "❌ " + (res?.error || "Failed to catch");
+      }
+      setTimeout(() => { $('hiderCatchFeedback').textContent = ""; }, 3000);
+    });
+  };
+
+  $('hiderCatchCode').addEventListener("keyup", e => {
+    if (e.key === "Enter") $('submitHiderCatch').click();
+  });
   $('zoomOutBtn').onclick = () => map && map.zoomOut();
   $('fitMapBtn').onclick = () => {
     if (!map || targetMarkers.size === 0) return;
@@ -370,6 +403,11 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
       if (state.isCaught) {
         $('caughtBanner').classList.remove("hidden");
         $('gpsBtn').disabled = true;
+      } else if (state.team === "seekers" && res.seekerCode) {
+        $('seekerCodeBox').classList.remove("hidden");
+        $('mySeekerCode').textContent = res.seekerCode;
+      } else if (state.team === "hiders") {
+        $('hiderCatchBox').classList.remove("hidden");
       }
 
       $('shareInput').value = `${window.location.origin}/?room=${urlRoom}`;
