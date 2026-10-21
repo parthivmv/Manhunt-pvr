@@ -252,10 +252,10 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
           <p style="margin:0 0 12px;color:var(--muted);font-size:11px;font-weight:800;text-align:center">🔦 CATCH HIDER</p>
           <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
-              <input id="seekerDigit1" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:14px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:1px solid rgba(255,172,54,0.6);color:var(--orange);padding:2px;width:28px;height:28px;border-radius:4px;outline:none;transition:all 0.2s;line-height:1" placeholder="">
-              <input id="seekerDigit2" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:14px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:1px solid rgba(255,172,54,0.6);color:var(--orange);padding:2px;width:28px;height:28px;border-radius:4px;outline:none;transition:all 0.2s;line-height:1" placeholder="">
-              <input id="seekerDigit3" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:14px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:1px solid rgba(255,172,54,0.6);color:var(--orange);padding:2px;width:28px;height:28px;border-radius:4px;outline:none;transition:all 0.2s;line-height:1" placeholder="">
-              <input id="seekerDigit4" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:14px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:1px solid rgba(255,172,54,0.6);color:var(--orange);padding:2px;width:28px;height:28px;border-radius:4px;outline:none;transition:all 0.2s;line-height:1" placeholder="">
+              <input id="seekerDigit1" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:20px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:1px solid rgba(255,172,54,0.6);color:var(--orange);padding:4px;width:40px;height:40px;border-radius:6px;outline:none;transition:all 0.2s;line-height:1" placeholder="">
+              <input id="seekerDigit2" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:20px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:1px solid rgba(255,172,54,0.6);color:var(--orange);padding:4px;width:40px;height:40px;border-radius:6px;outline:none;transition:all 0.2s;line-height:1" placeholder="">
+              <input id="seekerDigit3" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:20px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:1px solid rgba(255,172,54,0.6);color:var(--orange);padding:4px;width:40px;height:40px;border-radius:6px;outline:none;transition:all 0.2s;line-height:1" placeholder="">
+              <input id="seekerDigit4" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:20px;font-weight:900;text-align:center;background:rgba(8,14,27,0.75);border:1px solid rgba(255,172,54,0.6);color:var(--orange);padding:4px;width:40px;height:40px;border-radius:6px;outline:none;transition:all 0.2s;line-height:1" placeholder="">
             </div>
             <button id="submitSeekerCatch" class="primary" style="padding:10px 20px;font-size:12px;font-weight:800">⚡ Catch</button>
           </div>
@@ -297,11 +297,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,0.02);border:1px solid var(--line-soft);border-radius:12px;padding:10px 12px;margin-bottom:14px">
           <div style="font-size:11px;color:var(--muted)">📍 GPS Accuracy</div>
-          <div style="display:flex;align-items:center;gap:8px">
-            <button id="gpsToleranceMinus" class="secondary" style="padding:6px 10px;font-size:11px;width:32px;height:32px">−</button>
-            <div id="gpsToleranceValue" style="font-size:13px;font-weight:800;color:var(--orange);min-width:40px;text-align:center">50m</div>
-            <button id="gpsTolerancePlus" class="secondary" style="padding:6px 10px;font-size:11px;width:32px;height:32px">+</button>
-          </div>
+          <div id="gpsAccuracyValue" style="font-size:13px;font-weight:800;color:var(--orange);min-width:50px;text-align:right">—</div>
         </div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:14px">🔵 You | 🟢 Hiders | 🟠 Seekers | 🔴 Caught</div>
         <h3 style="margin:18px 0;font-size:14px">Players</h3>
@@ -399,6 +395,9 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
       pos => {
         const { latitude: lat, longitude: lon, accuracy } = pos.coords;
         socket.emit("location-update", { lat, lon, accuracy });
+        // Update live GPS accuracy display
+        const accuracyValue = Math.round(accuracy);
+        $('gpsAccuracyValue').textContent = accuracyValue + 'm';
       },
       err => alert("Geolocation error: " + err.message),
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
@@ -468,17 +467,6 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     if (!map || targetMarkers.size === 0) return;
     const group = new L.featureGroup([...targetMarkers.values()]);
     map.fitBounds(group.getBounds().pad(0.1));
-  };
-
-  // GPS Tolerance controls
-  let gpsTolerance = 50;
-  $('gpsTolerancePlus').onclick = () => {
-    gpsTolerance = Math.min(gpsTolerance + 10, 200);
-    $('gpsToleranceValue').textContent = gpsTolerance + 'm';
-  };
-  $('gpsToleranceMinus').onclick = () => {
-    gpsTolerance = Math.max(gpsTolerance - 10, 10);
-    $('gpsToleranceValue').textContent = gpsTolerance + 'm';
   };
 
   // Initialize map

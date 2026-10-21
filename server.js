@@ -457,7 +457,18 @@ io.on("connection", socket => {
     const room = rooms.get(socket.data?.room);
     if (!room || room.status !== "playing") return cb({ ok: false, error: "Game not active." });
 
-    const seeker = room.players.get(socket.id);
+    let seeker = room.players.get(socket.id);
+
+    // If seeker not found by socket ID, find by team (for reloaded seekers)
+    if (!seeker) {
+      for (const p of room.players.values()) {
+        if (p.deviceId === socket.data?.deviceId && p.team === "seekers") {
+          seeker = p;
+          break;
+        }
+      }
+    }
+
     if (!seeker || seeker.team !== "seekers") return cb({ ok: false, error: "Only seekers can catch hiders." });
 
     const input = String(data?.code || "").trim();
