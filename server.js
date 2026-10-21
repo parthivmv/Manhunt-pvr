@@ -106,12 +106,11 @@ function clearPings(room) {
 function broadcastLocations(room, teamFilter = null) {
   if (room.status !== "playing") return;
   const locations = [];
-  const players = room.players.values();
-  for (const p of players) {
+  for (const p of room.players.values()) {
     if (p.location && (!teamFilter || p.team === teamFilter)) {
       locations.push({
         id: p.id, username: p.username, team: p.team,
-        caught: !!p.caught, caughtBy: p.caughtBy || null,
+        caught: p.caught, caughtBy: p.caughtBy,
         lat: p.location.lat, lon: p.location.lon,
         accuracy: p.location.accuracy, capturedAt: p.location.capturedAt
       });
@@ -348,6 +347,14 @@ io.on("connection", socket => {
       existingPlayer.connected = true;
       existingPlayer.lastSeen = Date.now();
 
+      // Ensure codes are set for rejoining players
+      if (existingPlayer.team === "hiders" && !existingPlayer.catchCode) {
+        existingPlayer.catchCode = generateCatchCode(room);
+      }
+      if (existingPlayer.team === "seekers" && !existingPlayer.seekerCode) {
+        existingPlayer.seekerCode = generateSeekerCode(room);
+      }
+
       socket.join(code);
       socket.data = { room: code, deviceId, team: existingPlayer.team };
 
@@ -355,8 +362,8 @@ io.on("connection", socket => {
         ok: true,
         state: roomState(room),
         playerId: socket.id,
-        catchCode: existingPlayer.team === "hiders" ? existingPlayer.catchCode || generateCatchCode(room) : null,
-        seekerCode: existingPlayer.team === "seekers" ? existingPlayer.seekerCode || generateSeekerCode(room) : null
+        catchCode: existingPlayer.team === "hiders" ? existingPlayer.catchCode : null,
+        seekerCode: existingPlayer.team === "seekers" ? existingPlayer.seekerCode : null
       });
       emitRoom(room);
 
@@ -456,10 +463,14 @@ io.on("connection", socket => {
     const input = String(data?.code || "").trim();
     if (!input) return cb({ ok: false, error: "Enter the hider's 4-digit code." });
 
-    const hider = [...room.players.values()].find(
-      p => p.team === "hiders" && p.catchCode && p.catchCode === input
-    );
-    if (!hider || hider.caught) return cb({ ok: false, error: "Invalid or already caught hider." });
+    let hider = null;
+    for (const p of room.players.values()) {
+      if (p.team === "hiders" && p.catchCode === input && !p.caught) {
+        hider = p;
+        break;
+      }
+    }
+    if (!hider) return cb({ ok: false, error: "Invalid or already caught hider." });
 
     hider.caught = true;
     hider.caughtBy = seeker.username;
